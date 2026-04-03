@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>NeuralMint — AI Crypto Token Driven by Bitcoin</title>
+<title>NeuralMint (NMNT) — AI Crypto Token Driven by Bitcoin</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 140'%3E%3Cpolygon points='70,8 122,38 122,98 70,128 18,98 18,38' fill='%231a1400'/%3E%3Cpolygon points='70,8 122,38 122,98 70,128 18,98 18,38' fill='none' stroke='%23F7A600' stroke-width='4'/%3E%3Crect x='47' y='44' width='9' height='48' rx='2' fill='%23F7A600'/%3E%3Crect x='84' y='44' width='9' height='48' rx='2' fill='%23F7A600'/%3E%3Cline x1='56' y1='44' x2='84' y2='92' stroke='%23F7A600' stroke-width='9' stroke-linecap='round'/%3E%3Ccircle cx='47' cy='44' r='4' fill='%23FFC740'/%3E%3Ccircle cx='93' cy='92' r='4' fill='%23FFC740'/%3E%3C/svg%3E"/>
+<meta property="og:title" content="NeuralMint (NMNT)"/>
+<meta property="og:description" content="The first AI crypto token whose tokenomics are driven by Bitcoin price and Fear &amp; Greed Index — live on Polygon."/>
+<meta property="og:image" content="https://neuralmint-dapp.vercel.app/og-image.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="NeuralMint (NMNT) — BTC-Powered AI Token"/>
+<meta name="theme-color" content="#F7A600"/>
 <meta name="description" content="NeuralMint (NMNT) — The first DeFi token whose burn rate, yield, and supply automatically adapt to Bitcoin market conditions every 4 hours."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
@@ -48,7 +55,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
 /* ── HEADER ─────────────────────────────────────────────────────────── */
 header{display:flex;align-items:center;justify-content:space-between;padding:24px 0;border-bottom:1px solid var(--border);margin-bottom:0}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.logo-hex{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--orange));clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);flex-shrink:0}
+.logo-mark{flex-shrink:0;width:38px;height:38px}
 .logo-name{font-family:var(--ff-head);font-size:18px;font-weight:800;letter-spacing:-0.02em}
 .logo-name span{color:var(--gold)}
 .logo-ticker{font-family:var(--ff-mono);font-size:11px;color:var(--dim2);background:rgba(247,166,0,0.1);padding:2px 8px;border-radius:4px;border:1px solid rgba(247,166,0,0.2)}
@@ -186,7 +193,7 @@ h1 .accent2{color:var(--blue)}
 .how-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
 @media(max-width:640px){.how-grid{grid-template-columns:1fr}}
 .how-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
-.how-icon{font-size:28px;margin-bottom:12px;display:block}
+.how-icon{display:block;margin-bottom:12px;width:28px;height:28px}
 .how-title{font-family:var(--ff-head);font-size:16px;font-weight:700;margin-bottom:8px}
 .how-desc{font-size:13px;color:var(--dim2);line-height:1.7}
 
@@ -211,7 +218,7 @@ h1 .accent2{color:var(--blue)}
 .features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:40px 0}
 @media(max-width:640px){.features{grid-template-columns:1fr}}
 .feat{padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);text-align:left}
-.feat-icon{font-size:22px;margin-bottom:10px;display:block}
+.feat-icon{display:block;margin-bottom:12px;width:26px;height:26px}
 .feat-title{font-family:var(--ff-head);font-weight:700;font-size:14px;margin-bottom:6px}
 .feat-desc{font-size:13px;color:var(--dim2);line-height:1.6}
 
@@ -240,7 +247,20 @@ code{font-family:var(--ff-mono);font-size:12px;background:rgba(255,255,255,.06);
 <!-- ── HEADER ─────────────────────────────────────────────────────────── -->
 <header>
   <a class="logo" href="#">
-    <div class="logo-hex"></div>
+    <svg class="logo-mark" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="#1a1400"/>
+      <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="3.5"/>
+      <polygon points="70,22 110,44 110,90 70,112 30,90 30,44" fill="none" stroke="#F7A600" stroke-width="1" opacity="0.3"/>
+      <line x1="105" y1="36" x2="118" y2="25" stroke="#F7A600" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+      <circle cx="118" cy="25" r="3" fill="#F7A600" opacity="0.6"/>
+      <line x1="35" y1="100" x2="22" y2="113" stroke="#F7A600" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+      <circle cx="22" cy="113" r="3" fill="#F7A600" opacity="0.6"/>
+      <rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+      <rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+      <line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/>
+      <circle cx="47" cy="44" r="4" fill="#FFC740"/>
+      <circle cx="93" cy="92" r="4" fill="#FFC740"/>
+    </svg>
     <span class="logo-name">Neural<span>Mint</span></span>
     <span class="logo-ticker">NMNT</span>
   </a>
@@ -262,7 +282,9 @@ code{font-family:var(--ff-mono);font-size:12px;background:rgba(255,255,255,.06);
 
   <!-- Hero (shown when not connected) -->
   <div id="heroSection">
-    <div class="hero">
+    <div class="hero" style="position:relative;overflow:hidden">
+      <div style="position:absolute;right:-60px;top:-40px;opacity:0.04;pointer-events:none;z-index:0"><svg width="320" height="320" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><circle cx="70" cy="70" r="68" fill="none" stroke="#F7A600" stroke-width="2"/><circle cx="70" cy="70" r="58" fill="none" stroke="#F7A600" stroke-width="1"/><rect x="42" y="40" width="9" height="56" rx="2" fill="#F7A600"/><rect x="89" y="40" width="9" height="56" rx="2" fill="#F7A600"/><line x1="51" y1="40" x2="89" y2="96" stroke="#F7A600" stroke-width="10" stroke-linecap="round"/></svg></div>
+      <div style="position:relative;z-index:1">
       <div class="hero-badge">
         <div class="hero-badge-dot"></div>
         Live on Polygon · Bitcoin-Powered AI Oracle
@@ -273,7 +295,8 @@ code{font-family:var(--ff-mono);font-size:12px;background:rgba(255,255,255,.06);
         <button class="btn-primary" onclick="connectWallet()">Connect Wallet</button>
         <a class="btn-outline" href="#" onclick="showTab('about',document.querySelectorAll('.nav-btn')[3])">How it works</a>
       </div>
-    </div>
+      </div><!-- /z-index wrapper -->
+    </div><!-- /hero -->
 
     <!-- BTC signal preview (live, no wallet needed) -->
     <div class="section-title">Live Bitcoin Signal</div>
@@ -285,9 +308,9 @@ code{font-family:var(--ff-mono);font-size:12px;background:rgba(255,255,255,.06);
     </div>
 
     <div class="features">
-      <div class="feat"><span class="feat-icon">₿</span><div class="feat-title">Bitcoin-Driven</div><div class="feat-desc">Burn rate & APY automatically adapt to BTC price movements and the Fear & Greed Index every 4 hours.</div></div>
-      <div class="feat"><span class="feat-icon">⚡</span><div class="feat-title">Auto-Deflationary</div><div class="feat-desc">Every transfer burns 0–5% of tokens. In volatile markets, more tokens are burned, making NMNT scarcer.</div></div>
-      <div class="feat"><span class="feat-icon">🔒</span><div class="feat-title">Smart Staking</div><div class="feat-desc">Lock tokens for 7, 30, or 90 days for bonus yield. APY multiplier moves with Bitcoin sentiment.</div></div>
+      <div class="feat"><span class="feat-icon"><svg width="26" height="26" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="#1a1400"/><polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="6"/><rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/><rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/><line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/><circle cx="47" cy="44" r="4" fill="#FFC740"/><circle cx="93" cy="92" r="4" fill="#FFC740"/></svg></span><div class="feat-title">Bitcoin-Driven</div><div class="feat-desc">Burn rate &amp; APY automatically adapt to BTC price movements and the Fear &amp; Greed Index every 4 hours.</div></div>
+      <div class="feat"><span class="feat-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="feat-title">Auto-Deflationary</div><div class="feat-desc">Every transfer burns 0–5% of tokens. In volatile markets, more tokens are burned, making NMNT scarcer.</div></div>
+      <div class="feat"><span class="feat-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="11" width="18" height="11" rx="2" stroke="#F7A600" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="#F7A600"/></svg></span><div class="feat-title">Smart Staking</div><div class="feat-desc">Lock tokens for 7, 30, or 90 days for bonus yield. APY multiplier moves with Bitcoin sentiment.</div></div>
     </div>
   </div>
 
@@ -327,7 +350,22 @@ code{font-family:var(--ff-mono);font-size:12px;background:rgba(255,255,255,.06);
 <!-- ── STAKE ───────────────────────────────────────────────────────────── -->
 <div id="sec-stake" class="section">
   <div id="stakeConnectMsg" style="display:none">
-    <div class="hero-connect"><div class="hc-title">Connect to Stake</div><div class="hc-sub">Connect your wallet to stake NMNT and earn Bitcoin-driven yield.</div><button class="btn-primary" onclick="connectWallet()">Connect Wallet</button></div>
+    <div class="hero-connect">
+      <div style="display:flex;justify-content:center;margin-bottom:16px">
+        <svg width="52" height="52" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="#1a1400"/>
+          <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="4"/>
+          <rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="47" cy="44" r="4" fill="#FFC740"/>
+          <circle cx="93" cy="92" r="4" fill="#FFC740"/>
+        </svg>
+      </div>
+      <div class="hc-title">Connect to Stake</div>
+      <div class="hc-sub">Connect your wallet to stake NMNT and earn Bitcoin-driven yield.</div>
+      <button class="btn-primary" onclick="connectWallet()">Connect Wallet</button>
+    </div>
   </div>
   <div id="stakeContent" style="display:none">
     <!-- APY table -->
@@ -374,7 +412,16 @@ code{font-family:var(--ff-mono);font-size:12px;background:rgba(255,255,255,.06);
 <div id="sec-oracle" class="section">
   <div class="card" style="background:linear-gradient(135deg,rgba(247,166,0,.06),rgba(232,104,44,.04))">
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
-      <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--gold),var(--orange));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">₿</div>
+      <div style="width:52px;height:52px;background:#1a1200;border:1.5px solid rgba(247,166,0,0.5);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="36" height="36" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="5"/>
+          <rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="47" cy="44" r="4" fill="#FFC740"/>
+          <circle cx="93" cy="92" r="4" fill="#FFC740"/>
+        </svg>
+      </div>
       <div>
         <div class="card-title">Bitcoin AI Oracle</div>
         <div class="dim" style="font-size:13px">Reads BTC price + Fear &amp; Greed Index → computes NMNT tokenomics → pushes on-chain every 4h</div>
@@ -445,15 +492,31 @@ code{font-family:var(--ff-mono);font-size:12px;background:rgba(255,255,255,.06);
 <div id="sec-about" class="section">
   <div style="max-width:680px;margin:0 auto">
     <div style="text-align:center;padding:40px 0 32px">
+      <div style="display:inline-flex;align-items:center;justify-content:center;margin-bottom:20px">
+        <svg width="64" height="64" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="#1a1400"/>
+          <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="3.5"/>
+          <polygon points="70,22 110,44 110,90 70,112 30,90 30,44" fill="none" stroke="#F7A600" stroke-width="1" opacity="0.3"/>
+          <line x1="105" y1="36" x2="118" y2="25" stroke="#F7A600" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+          <circle cx="118" cy="25" r="3" fill="#F7A600" opacity="0.6"/>
+          <line x1="35" y1="100" x2="22" y2="113" stroke="#F7A600" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+          <circle cx="22" cy="113" r="3" fill="#F7A600" opacity="0.6"/>
+          <rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="47" cy="44" r="4" fill="#FFC740"/>
+          <circle cx="93" cy="92" r="4" fill="#FFC740"/>
+        </svg>
+      </div>
       <h1 style="font-size:clamp(28px,4vw,42px);margin-bottom:16px">Why <span class="accent">Bitcoin</span>?</h1>
       <p class="hero-sub" style="font-size:16px">Bitcoin is the most liquid, most watched, most predictive signal in crypto. When BTC moves, everything moves. NeuralMint is the first token to make this its core mechanic.</p>
     </div>
 
     <div class="how-grid">
-      <div class="how-card"><span class="how-icon">📉</span><div class="how-title">Bear Market Protection</div><div class="how-desc">When BTC crashes and fear spikes, NMNT automatically increases its burn rate (deflationary pressure) and boosts staking APY to reward holders who don't panic sell.</div></div>
-      <div class="how-card"><span class="how-icon">📈</span><div class="how-title">Bull Run Mechanics</div><div class="how-desc">In periods of extreme BTC greed, burn rate drops to near zero and more tokens can be minted — giving the ecosystem room to grow alongside the overall market rally.</div></div>
-      <div class="how-card"><span class="how-icon">🧠</span><div class="how-title">AI Signal Logic</div><div class="how-desc">The oracle combines two free data sources: CoinGecko (BTC price + 24h change) and Alternative.me (Fear & Greed Index). These are combined into a stress score that maps to tokenomics parameters.</div></div>
-      <div class="how-card"><span class="how-icon">🔗</span><div class="how-title">Fully On-Chain</div><div class="how-desc">Every parameter change is a blockchain transaction. Transparent, auditable, and verifiable on Polygonscan. The Gelato automation log shows every oracle update.</div></div>
+      <div class="how-card"><span class="how-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="how-title">Bear Market Protection</div><div class="how-desc">When BTC crashes and fear spikes, NMNT automatically increases its burn rate (deflationary pressure) and boosts staking APY to reward holders who don't panic sell.</div></div>
+      <div class="how-card"><span class="how-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17 6 23 6 23 12" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="how-title">Bull Run Mechanics</div><div class="how-desc">In periods of extreme BTC greed, burn rate drops to near zero and more tokens can be minted — giving the ecosystem room to grow alongside the overall market rally.</div></div>
+      <div class="how-card"><span class="how-icon"><svg width="28" height="28" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><circle cx="70" cy="70" r="60" fill="none" stroke="#F7A600" stroke-width="5"/><circle cx="70" cy="70" r="12" fill="#F7A600"/><line x1="70" y1="10" x2="70" y2="40" stroke="#F7A600" stroke-width="4" stroke-linecap="round"/><line x1="70" y1="100" x2="70" y2="130" stroke="#F7A600" stroke-width="4" stroke-linecap="round"/><line x1="10" y1="70" x2="40" y2="70" stroke="#F7A600" stroke-width="4" stroke-linecap="round"/><line x1="100" y1="70" x2="130" y2="70" stroke="#F7A600" stroke-width="4" stroke-linecap="round"/><circle cx="70" cy="70" r="4" fill="#FFC740"/></svg></span><div class="how-title">AI Signal Logic</div><div class="how-desc">The oracle combines two free data sources: CoinGecko (BTC price + 24h change) and Alternative.me (Fear &amp; Greed Index). These are combined into a stress score that maps to tokenomics parameters.</div></div>
+      <div class="how-card"><span class="how-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="how-title">Fully On-Chain</div><div class="how-desc">Every parameter change is a blockchain transaction. Transparent, auditable, and verifiable on Polygonscan. The Gelato automation log shows every oracle update.</div></div>
     </div>
 
     <div class="card">
@@ -483,6 +546,25 @@ code{font-family:var(--ff-mono);font-size:12px;background:rgba(255,255,255,.06);
   </div>
 </div>
 
+<!-- ── FOOTER ──────────────────────────────────────────────────────────── -->
+<footer style="border-top:1px solid rgba(247,166,0,0.1);padding:32px 0;margin-top:40px;text-align:center">
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px">
+    <svg width="28" height="28" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="#1a1400"/>
+      <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="4"/>
+      <polygon points="70,22 110,44 110,90 70,112 30,90 30,44" fill="none" stroke="#F7A600" stroke-width="1" opacity="0.3"/>
+      <rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+      <rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+      <line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/>
+      <circle cx="47" cy="44" r="4" fill="#FFC740"/>
+      <circle cx="93" cy="92" r="4" fill="#FFC740"/>
+    </svg>
+    <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:-0.02em">Neural<span style="color:#F7A600">Mint</span></span>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6070;background:rgba(247,166,0,0.08);padding:2px 8px;border-radius:4px;border:1px solid rgba(247,166,0,0.15)">NMNT</span>
+  </div>
+  <p style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3a4050;letter-spacing:0.06em">BTC-POWERED AI TOKEN · POLYGON · OPEN SOURCE</p>
+</footer>
+
 </div><!-- /.app -->
 <div id="toast"></div>
 
@@ -497,7 +579,7 @@ const CONFIG = {
   CHAIN_NAME:      "Polygon Amoy Testnet",
   RPC_URL:         "https://rpc-amoy.polygon.technology",
   EXPLORER:        "https://amoy.polygonscan.com",
-  ORACLE_API:      "https://neuralmint-oracle.vercel.app/api/signal", // ← YOUR Vercel URL
+  ORACLE_API:      "https://neuralmint-oracle.vercel.app/api/signal, // ← YOUR Vercel URL
 
   TOKEN_ADDR:      "0x1EED8E512C93f8c458bcb8362F893ea8aF142913", // ← After deploy
   STAKING_ADDR:    "0x03B2cC3DB7B7EB7f32A424654bB3CaA48eF18D89",
