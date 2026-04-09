@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMAT Protocol | Autonomous Monetary AI Token</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0B0E11;
+            --bg-secondary: #131722;
+            --bg-tertiary: #1E222D;
+            --bg-card: #1E222D;
+            --border-color: #2B2F3E;
+            --text-primary: #D1D4DC;
+            --text-secondary: #848E9C;
+            --text-muted: #5C6173;
+            --accent-primary: #F0B90B;
+            --accent-green: #0ECB81;
+            --accent-red: #F6465D;
+            --accent-blue: #0052FF;
+            --accent-purple: #7645D9;
+            --accent-cyan: #00D9FF;
+            --gradient-gold: linear-gradient(135deg, #F0B90B 0%, #D4AF37 100%);
+            --gradient-dark: linear-gradient(180deg, #131722 0%, #0B0E11 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-gold);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            color: #000;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            background: var(--gradient-gold);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-item {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--gradient-gold);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-danger {
+            background: var(--accent-red);
+            color: #fff;
+        }
+
+        .wallet-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .wallet-btn:hover {
+            background: var(--border-color);
+        }
+
+        /* Main Container */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 48px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: radial-gradient(ellipse at center right, rgba(240, 185, 11, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(240, 185, 11, 0.1);
+            border: 1px solid rgba(240, 185, 11, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent-primary);
+            margin-bottom: 24px;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 0%, var(--text-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-bottom: 32px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .stat-icon.gold { background: rgba(240, 185, 11, 0.1); }
+        .stat-icon.green { background: rgba(14, 203, 129, 0.1); }
+        .stat-icon.red { background: rgba(246, 70, 93, 0.1); }
+        .stat-icon.blue { background: rgba(0, 82, 255, 0.1); }
+        .stat-icon.purple { background: rgba(118, 69, 217, 0.1); }
+        .stat-icon.cyan { background: rgba(0, 217, 255, 0.1); }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-value.gold { color: var(--accent-primary); }
+        .stat-value.green { color: var(--accent-green); }
+        .stat-value.red { color: var(--accent-red); }
+        .stat-value.blue { color: var(--accent-blue); }
+        .stat-value.purple { color: var(--accent-purple); }
+        .stat-value.cyan { color: var(--accent-cyan); }
+
+        .stat-change {
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-change.up { color: var(--accent-green); }
+        .stat-change.down { color: var(--accent-red); }
+
+        /* Two Column Layout */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        /* Prediction Panel */
+        .prediction-main {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .prediction-header {
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(240, 185, 11, 0.05) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .prediction-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .prediction-title h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(14, 203, 129, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--accent-green);
+        }
+
+        .live-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            padding: 24px;
+        }
+
+        .prediction-item {
+            text-align: center;
+        }
+
+        .prediction-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .prediction-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .prediction-value.gold { color: var(--accent-primary); }
+        .prediction-value.green { color: var(--accent-green); }
+        .prediction-value.red { color: var(--accent-red); }
+        .prediction-value.cyan { color: var(--accent-cyan); }
+
+        /* Mode Indicator */
+        .mode-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .mode-steady {
+            background: rgba(14, 203, 129, 0.1);
+            color: var(--accent-green);
+        }
+
+        .mode-grow {
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--accent-cyan);
+        }
+
+        .mode-preserve {
+            background: rgba(240, 185, 11, 0.1);
+            color: var(--accent-primary);
+        }
+
+        .mode-survive {
+            background: rgba(246, 70, 93, 0.1);
+            color: var(--accent-red);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            height: 300px;
+            padding: 24px;
+        }
+
+        /* Sidebar Cards */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Allocation Chart */
+        .allocation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .allocation-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .allocation-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .allocation-info {
+            flex: 1;
+        }
+
+        .allocation-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .allocation-bar {
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .allocation-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s;
+        }
+
+        .allocation-value {
+            font-size: 14px;
+            font-weight: 600;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        /* Rate Limits */
+        .limits-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .limit-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .limit-item:last-child {
+            border-bottom: none;
+        }
+
+        .limit-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .limit-value {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .limit-value.green { color: var(--accent-green); }
+        .limit-value.red { color: var(--accent-red); }
+
+        /* Treasury Info */
+        .treasury-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .treasury-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Emergency Banner */
+        .emergency-banner {
+            background: linear-gradient(90deg, var(--accent-red), #c0392b);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            animation: emergency-pulse 2s infinite;
+        }
+
+        .emergency-banner.active {
+            display: flex;
+        }
+
+        @keyframes emergency-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .emergency-banner svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Supply Adjustment */
+        .supply-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        .supply-arrow {
+            font-size: 24px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .supply-arrow.up {
+            background: rgba(14, 203, 129, 0.1);
+            color: var(--accent-green);
+        }
+
+        .supply-arrow.down {
+            background: rgba(246, 70, 93, 0.1);
+            color: var(--accent-red);
+        }
+
+        .supply-arrow.neutral {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+        }
+
+        .supply-info {
+            text-align: center;
+        }
+
+        .supply-info strong {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .supply-info span {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid var(--border-color);
+            padding: 24px;
+            margin-top: 48px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .prediction-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+            .hero {
+                padding: 24px;
+            }
+            .hero h1 {
+                font-size: 32px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .prediction-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Contract Info */
+        .contract-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            word-break: break-all;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-gold);
+            transition: width 0.3s;
+        }
+
+        /* Risk Meter */
+        .risk-meter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .risk-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .risk-segment {
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .risk-segment.low { background: var(--accent-green); }
+        .risk-segment.medium { background: var(--accent-primary); }
+        .risk-segment.high { background: var(--accent-red); }
+
+        .risk-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .risk-label.low { color: var(--accent-green); }
+        .risk-label.medium { color: var(--accent-primary); }
+        .risk-label.high { color: var(--accent-red); }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">AM</div>
+                <span class="logo-text">AMAT</span>
+            </div>
+            <nav class="nav">
+                <a class="nav-item active">Dashboard</a>
+                <a class="nav-item">Staking</a>
+                <a class="nav-item">Governance</a>
+                <a class="nav-item">Analytics</a>
+                <a class="nav-item">Docs</a>
+            </nav>
+            <div class="header-actions">
+                <button class="btn btn-primary" id="stakeBtn">
+                    <span>Stake AMAT</span>
+                </button>
+                <button class="wallet-btn" id="connectWallet">
+                    Connect Wallet
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- Emergency Banner -->
+        <div class="emergency-banner" id="emergencyBanner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <strong>EMERGENCY MODE ACTIVE</strong> - Supply adjustments halted
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-badge">
+                <span>AI-Powered Autonomous Monetary Policy</span>
+            </div>
+            <h1>Autonomous Monetary<br>AI Token</h1>
+            <p>The first DeFi protocol with real-time ML-driven supply adjustments. Community-governed with institutional-grade security.</p>
+            <div class="hero-actions">
+                <button class="btn btn-primary" id="buyBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                    Buy AMAT
+                </button>
+                <button class="btn btn-secondary" id="learnBtn">Learn More</button>
+            </div>
+        </section>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Total Supply</span>
+                    <div class="stat-icon gold">$</div>
+                </div>
+                <div class="stat-value gold" id="totalSupply">--</div>
+                <div class="stat-change up" id="supplyChange">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Treasury Balance</span>
+                    <div class="stat-icon blue">T</div>
+                </div>
+                <div class="stat-value blue" id="treasuryBalance">--</div>
+                <div class="stat-change" id="tcrValue">TCR: --</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Current Mode</span>
+                    <div class="stat-icon green" id="modeIcon">M</div>
+                </div>
+                <div class="stat-value green" id="currentMode">--</div>
+                <div class="stat-change" id="modeDescription">--</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Next Epoch</span>
+                    <div class="stat-icon purple">T</div>
+                </div>
+                <div class="stat-value purple" id="nextEpoch">--</div>
+                <div class="stat-change" id="epochStatus">--</div>
+            </div>
+        </section>
+
+        <!-- Main Prediction Panel -->
+        <section class="prediction-main">
+            <div class="prediction-header">
+                <div class="prediction-title">
+                    <h3>AI Market Prediction</h3>
+                    <div class="live-badge">LIVE</div>
+                </div>
+                <div class="mode-indicator mode-steady" id="protocolMode">
+                    STEADY MODE
+                </div>
+            </div>
+            <div class="prediction-grid">
+                <div class="prediction-item">
+                    <div class="prediction-label">Volatility</div>
+                    <div class="prediction-value gold" id="volatilityValue">--</div>
+                </div>
+                <div class="prediction-item">
+                    <div class="prediction-label">Direction</div>
+                    <div class="prediction-value" id="directionValue">--</div>
+                </div>
+                <div class="prediction-item">
+                    <div class="prediction-label">Confidence</div>
+                    <div class="prediction-value cyan" id="confidenceValue">--</div>
+                </div>
+                <div class="prediction-item">
+                    <div class="prediction-label">Risk Level</div>
+                    <div class="prediction-value" id="riskValue">--</div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="predictionChart"></canvas>
+                </div>
+                <div class="supply-action" id="supplyAction">
+                    <div class="supply-arrow neutral" id="supplyArrow">
+                        <span>→</span>
+                    </div>
+                    <div class="supply-info">
+                        <strong id="supplyActionText">No Action Required</strong>
+                        <span id="supplyActionDesc">Protocol operating within normal parameters</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Grid -->
+        <section class="content-grid">
+            <!-- Main Content -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Protocol Controls</h3>
+                    <button class="btn btn-danger" id="emergencyBtn" disabled>
+                        Emergency Mode
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="limits-list">
+                        <div class="limit-item">
+                            <span class="limit-label">Mint per Epoch</span>
+                            <span class="limit-value green">+2.00%</span>
+                        </div>
+                        <div class="limit-item">
+                            <span class="limit-label">Burn per Epoch</span>
+                            <span class="limit-value red">-3.00%</span>
+                        </div>
+                        <div class="limit-item">
+                            <span class="limit-label">Sell Tax (Hourly)</span>
+                            <span class="limit-value">1.00%</span>
+                        </div>
+                        <div class="limit-item">
+                            <span class="limit-label">Whale Threshold</span>
+                            <span class="limit-value">5.00%</span>
+                        </div>
+                        <div class="limit-item">
+                            <span class="limit-label">Emergency Duration</span>
+                            <span class="limit-value">24 hours</span>
+                        </div>
+                    </div>
+                    <div class="contract-info" id="contractInfo">
+                        Contract: Connecting to Polygon network...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Treasury Allocation -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Treasury Allocation</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="allocation-list">
+                            <div class="allocation-item">
+                                <div class="allocation-color" style="background: var(--accent-green);"></div>
+                                <div class="allocation-info">
+                                    <div class="allocation-name">Stablecoins</div>
+                                    <div class="allocation-bar">
+                                        <div class="allocation-fill" style="width: 30%; background: var(--accent-green);"></div>
+                                    </div>
+                                </div>
+                                <div class="allocation-value">30%</div>
+                            </div>
+                            <div class="allocation-item">
+                                <div class="allocation-color" style="background: var(--accent-blue);"></div>
+                                <div class="allocation-info">
+                                    <div class="allocation-name">Yield Positions</div>
+                                    <div class="allocation-bar">
+                                        <div class="allocation-fill" style="width: 30%; background: var(--accent-blue);"></div>
+                                    </div>
+                                </div>
+                                <div class="allocation-value">30%</div>
+                            </div>
+                            <div class="allocation-item">
+                                <div class="allocation-color" style="background: var(--accent-primary);"></div>
+                                <div class="allocation-info">
+                                    <div class="allocation-name">Buyback Reserve</div>
+                                    <div class="allocation-bar">
+                                        <div class="allocation-fill" style="width: 20%; background: var(--accent-primary);"></div>
+                                    </div>
+                                </div>
+                                <div class="allocation-value">20%</div>
+                            </div>
+                            <div class="allocation-item">
+                                <div class="allocation-color" style="background: var(--accent-purple);"></div>
+                                <div class="allocation-info">
+                                    <div class="allocation-name">Opportunity Fund</div>
+                                    <div class="allocation-bar">
+                                        <div class="allocation-fill" style="width: 20%; background: var(--accent-purple);"></div>
+                                    </div>
+                                </div>
+                                <div class="allocation-value">20%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market Metrics -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Market Metrics</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="limits-list">
+                            <div class="limit-item">
+                                <span class="limit-label">BTC Dominance</span>
+                                <span class="limit-value" id="btcDominance">--</span>
+                            </div>
+                            <div class="limit-item">
+                                <span class="limit-label">Market Health</span>
+                                <span class="limit-value" id="marketHealth">--</span>
+                            </div>
+                            <div class="limit-item">
+                                <span class="limit-label">Fear & Greed</span>
+                                <span class="limit-value" id="fearGreed">--</span>
+                            </div>
+                            <div class="limit-item">
+                                <span class="limit-label">Whale Score</span>
+                                <span class="limit-value" id="whaleScore">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Risk Assessment -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Risk Assessment</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="prediction-item">
+                            <div class="prediction-label">Overall Risk</div>
+                            <div class="prediction-value" id="overallRisk" style="color: var(--accent-primary);">--</div>
+                        </div>
+                        <div class="risk-meter">
+                            <span class="risk-label low">LOW</span>
+                            <div class="risk-bar" id="riskBar">
+                                <div class="risk-segment low" style="width: 33%;"></div>
+                                <div class="risk-segment medium" style="width: 34%;"></div>
+                                <div class="risk-segment high" style="width: 33%;"></div>
+                            </div>
+                            <span class="risk-label high">HIGH</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="riskProgress" style="width: 50%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>AMAT Protocol &copy; 2026 | Built on Polygon | Secured by AI</p>
+    </footer>
+
+    <script>
+        // Configuration - DEPLOYED CONTRACT ADDRESSES
+        const CONFIG = {
+            rpcUrl: 'https://rpc-amoy.polygon.technology',
+            chainId: 80002,
+            chainName: 'Polygon Amoy',
+            contracts: {
+                token: '0x2670276554A3A02F614DF720c0e55A272a9Bf22c',
+                oracle: '0x0067585117049F9f32D367188Dad6a202f64ad3A',
+                circuitBreaker: '0x532BE413641260b7dd78aF895cF3476B438FC966',
+                treasury: '0xC5F1BC03EC57aaE77cBd0725f0d6b59bD5a3cFE1',
+                predictiveSupply: '0x5dfBDBBc516E57B067290cf937FDf7763DC8d4EF'
+            },
+            mlApiUrl: 'http://localhost:8000'
+        };
+
+        // Contract ABIs
+        const ABIS = {
+            token: [
+                "function totalSupply() view returns (uint256)",
+                "function lastSupplyAdjustment() view returns (uint256)",
+                "function canAdjust() view returns (bool)",
+                "function timeUntilNextEpoch() view returns (uint256)",
+                "event SupplyAdjusted(int256 delta, uint256 newSupply, uint256 timestamp, bytes32 reason)"
+            ],
+            oracle: [
+                "function getCurrentPrediction() view returns (uint256 timestamp, uint256 volatilityProbability, int256 direction, uint256 confidence, int256 recommendedAction, uint256 nonce)"
+            ],
+            circuitBreaker: [
+                "function emergencyActive() view returns (bool)",
+                "function currentTCR() view returns (uint256)",
+                "function getEmergencyState() view returns (bool isEmergency, uint256 tcr)",
+                "function activateEmergency()"
+            ],
+            predictiveSupply: [
+                "function currentMode() view returns (uint8)",
+                "function previewAdjustment() view returns (int256)",
+                "function getSupplyStats() view returns (uint256, int256, uint256, uint256, uint256)"
+            ]
+        };
+
+        const MODES = ['STEADY', 'PRESERVE', 'SURVIVE', 'GROW'];
+        const RISK_LEVELS = ['Low', 'Medium', 'High', 'Extreme'];
+
+        let provider;
+        let signer;
+        let address;
+        let contracts = {};
+        let chart;
+
+        async function init() {
+            document.getElementById('connectWallet').addEventListener('click', connectWallet);
+            document.getElementById('emergencyBtn').addEventListener('click', activateEmergency);
+            
+            // Auto-connect if already connected
+            if (window.ethereum?.selectedAddress) {
+                await connectWallet();
+            }
+
+            // Start ML data polling
+            fetchMLData();
+            setInterval(fetchMLData, 30000);
+        }
+
+        async function connectWallet() {
+            if (!window.ethereum) {
+                alert('Please install MetaMask');
+                return;
+            }
+            
+            try {
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                signer = provider.getSigner();
+                address = await signer.getAddress();
+                
+                document.getElementById('connectWallet').textContent = 
+                    `${address.slice(0, 6)}...${address.slice(-4)}`;
+                
+                await switchToAmoy();
+                await initContracts();
+                await startMonitoring();
+                
+            } catch (error) {
+                console.error('Failed to connect:', error);
+                alert('Failed to connect: ' + (error.message || 'Unknown error'));
+            }
+        }
+        
+        async function switchToAmoy() {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0x13882' }],
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_addEthereumChain',
+                            params: [{
+                                chainId: '0x13882',
+                                chainName: 'Polygon Amoy',
+                                nativeCurrency: {
+                                    name: 'MATIC',
+                                    symbol: 'MATIC',
+                                    decimals: 18
+                                },
+                                rpcUrls: ['https://rpc-amoy.polygon.technology'],
+                                blockExplorerUrls: ['https://www.oklink.com/amoy']
+                            }],
+                        });
+                    } catch (e) {
+                        console.error('Failed to add network:', e);
+                    }
+                }
+            }
+        }
+        
+        async function initContracts() {
+            const network = await provider.getNetwork();
+            CONFIG.chainId = Number(network.chainId);
+            
+            if (CONFIG.chainId !== 80002 && CONFIG.chainId !== 137) {
+                document.getElementById('contractInfo').textContent = 
+                    `Wrong network! Please switch to Polygon Amoy (ID: 80002)`;
+                document.getElementById('contractInfo').style.color = '#F6465D';
+                return;
+            }
+            
+            // Create contract instances with signer
+            for (const [name, address] of Object.entries(CONFIG.contracts)) {
+                if (address !== '0x0000000000000000000000000000000000000000' && ABIS[name]) {
+                    try {
+                        contracts[name] = new ethers.Contract(address, ABIS[name], signer);
+                    } catch (e) {
+                        console.error(`Failed to create ${name} contract:`, e);
+                    }
+                }
+            }
+            
+            const chainName = CONFIG.chainId === 137 ? 'Polygon Mainnet' : 'Polygon Amoy';
+            document.getElementById('contractInfo').textContent = 
+                `Connected to ${chainName} (ID: ${CONFIG.chainId})`;
+            document.getElementById('contractInfo').style.color = '#0ECB81';
+            
+            if (contracts.circuitBreaker) {
+                document.getElementById('emergencyBtn').disabled = false;
+            }
+        }
+
+        async function startMonitoring() {
+            await updateDashboard();
+            setInterval(updateDashboard, 15000);
+        }
+
+        async function updateDashboard() {
+            try {
+                // Only update if contracts are initialized
+                if (Object.keys(contracts).length === 0) {
+                    console.log('Contracts not initialized yet');
+                    return;
+                }
+                
+                await Promise.all([
+                    updatePrediction(),
+                    updateSupply(),
+                    updateEmergency(),
+                    updateMode()
+                ]);
+            } catch (error) {
+                console.error('Dashboard update failed:', error);
+            }
+        }
+
+        async function updatePrediction() {
+            if (!contracts.oracle) return;
+            
+            try {
+                const pred = await contracts.oracle.getCurrentPrediction();
+                
+                const volatility = Number(pred.volatilityProbability) / 100;
+                const direction = Number(pred.direction);
+                const confidence = Number(pred.confidence) / 100;
+                const action = Number(pred.recommendedAction);
+                
+                document.getElementById('volatilityValue').textContent = `${volatility.toFixed(1)}%`;
+                document.getElementById('confidenceValue').textContent = `${confidence.toFixed(1)}%`;
+                
+                // Direction
+                const dirElement = document.getElementById('directionValue');
+                if (direction > 0) {
+                    dirElement.textContent = 'BULL';
+                    dirElement.className = 'prediction-value green';
+                } else if (direction < 0) {
+                    dirElement.textContent = 'BEAR';
+                    dirElement.className = 'prediction-value red';
+                } else {
+                    dirElement.textContent = 'NEUTRAL';
+                    dirElement.className = 'prediction-value';
+                }
+                
+                // Supply action
+                const arrow = document.getElementById('supplyArrow');
+                const actionText = document.getElementById('supplyActionText');
+                const actionDesc = document.getElementById('supplyActionDesc');
+                
+                if (action > 0) {
+                    arrow.className = 'supply-arrow up';
+                    arrow.innerHTML = '<span>↑</span>';
+                    actionText.textContent = `+${action / 100}% Mint`;
+                    actionDesc.textContent = 'Protocol will expand supply';
+                } else if (action < 0) {
+                    arrow.className = 'supply-arrow down';
+                    arrow.innerHTML = '<span>↓</span>';
+                    actionText.textContent = `${action / 100}% Burn`;
+                    actionDesc.textContent = 'Protocol will contract supply';
+                } else {
+                    arrow.className = 'supply-arrow neutral';
+                    arrow.innerHTML = '<span>→</span>';
+                    actionText.textContent = 'No Action Required';
+                    actionDesc.textContent = 'Protocol operating within normal parameters';
+                }
+                
+            } catch (error) {
+                console.error('Failed to update prediction:', error);
+            }
+        }
+
+        async function updateSupply() {
+            if (!contracts.token) return;
+            
+            try {
+                const supply = await contracts.token.totalSupply();
+                const formattedSupply = ethers.utils.formatUnits(supply, 18);
+                
+                document.getElementById('totalSupply').textContent = 
+                    `${Number(formattedSupply).toLocaleString(undefined, { maximumFractionDigits: 0 })} AMAT`;
+                
+                // Next epoch
+                const canAdjust = await contracts.token.canAdjust();
+                const timeUntil = await contracts.token.timeUntilNextEpoch();
+                
+                if (canAdjust) {
+                    document.getElementById('nextEpoch').textContent = 'Ready';
+                    document.getElementById('epochStatus').textContent = 'Epoch available';
+                    document.getElementById('epochStatus').className = 'stat-change up';
+                } else {
+                    const minutes = Math.ceil(timeUntil / 60);
+                    document.getElementById('nextEpoch').textContent = `${minutes}m`;
+                    document.getElementById('epochStatus').textContent = 'Until next epoch';
+                }
+                
+            } catch (error) {
+                console.error('Failed to update supply:', error);
+            }
+        }
+
+        async function updateEmergency() {
+            if (!contracts.circuitBreaker) return;
+            
+            try {
+                const state = await contracts.circuitBreaker.getEmergencyState();
+                // ethers.js v6 returns tuples as arrays
+                const isEmergency = Array.isArray(state) ? state[0] : state[0];
+                const tcr = Number(Array.isArray(state) ? state[1] : state[1]) / 100;
+                
+                const banner = document.getElementById('emergencyBanner');
+                if (isEmergency) {
+                    banner.classList.add('active');
+                } else {
+                    banner.classList.remove('active');
+                }
+                
+                document.getElementById('tcrValue').textContent = `TCR: ${tcr.toFixed(2)}%`;
+                
+                if (tcr < 15) {
+                    document.getElementById('treasuryBalance').className = 'stat-value red';
+                } else {
+                    document.getElementById('treasuryBalance').className = 'stat-value blue';
+                }
+                
+            } catch (error) {
+                console.error('Failed to update emergency:', error);
+            }
+        }
+
+        async function updateMode() {
+            if (!contracts.predictiveSupply) return;
+            
+            try {
+                const mode = await contracts.predictiveSupply.currentMode();
+                const modeName = MODES[Number(mode)] || 'STEADY';
+                
+                const modeElement = document.getElementById('protocolMode');
+                const modeIcon = document.getElementById('modeIcon');
+                
+                modeElement.textContent = `${modeName} MODE`;
+                modeElement.className = `mode-indicator mode-${modeName.toLowerCase()}`;
+                
+                document.getElementById('currentMode').textContent = modeName;
+                document.getElementById('modeDescription').textContent = getModeDescription(modeName);
+                
+                // Update risk value based on mode
+                const riskElement = document.getElementById('riskValue');
+                const riskLevel = getRiskLevel(mode);
+                riskElement.textContent = riskLevel;
+                riskElement.className = `prediction-value ${getRiskColor(mode)}`;
+                
+                document.getElementById('overallRisk').textContent = riskLevel;
+                document.getElementById('overallRisk').style.color = getRiskHexColor(mode);
+                
+                // Update risk progress
+                const riskProgress = document.getElementById('riskProgress');
+                const progress = getRiskProgress(mode);
+                riskProgress.style.width = `${progress}%`;
+                
+            } catch (error) {
+                console.error('Failed to update mode:', error);
+            }
+        }
+
+        function getModeDescription(mode) {
+            const descriptions = {
+                'STEADY': 'Normal market conditions',
+                'PRESERVE': 'Cautious approach recommended',
+                'SURVIVE': 'High volatility detected',
+                'GROW': 'Bullish market opportunity'
+            };
+            return descriptions[mode] || 'Unknown mode';
+        }
+
+        function getRiskLevel(mode) {
+            const levels = ['Low', 'Low', 'High', 'Medium'];
+            return levels[mode] || 'Medium';
+        }
+
+        function getRiskColor(mode) {
+            const colors = ['green', 'green', 'red', 'gold'];
+            return colors[mode] || 'gold';
+        }
+
+        function getRiskHexColor(mode) {
+            const colors = ['#0ECB81', '#0ECB81', '#F6465D', '#F0B90B'];
+            return colors[mode] || '#F0B90B';
+        }
+
+        function getRiskProgress(mode) {
+            const progress = [25, 25, 85, 45];
+            return progress[mode] || 50;
+        }
+
+        async function fetchMLData() {
+            try {
+                const response = await fetch(`${CONFIG.mlApiUrl}/advanced?symbol=BTC`);
+                const data = await response.json();
+                
+                if (data && !data.error) {
+                    document.getElementById('fearGreed').textContent = `${data.fear_greed_index || 50}`;
+                    document.getElementById('whaleScore').textContent = `${data.whale?.metrics?.whale_score || 50}`;
+                    document.getElementById('marketHealth').textContent = `${data.onchain?.market_health?.overall_score || 50}%`;
+                    document.getElementById('btcDominance').textContent = `${data.onchain?.market?.btc_dominance || 50}%`;
+                    
+                    // Update prediction from ML API if no contract
+                    if (!contracts.oracle) {
+                        const vol = data.ensemble_volatility;
+                        const dir = data.ensemble_direction;
+                        const conf = data.ensemble_confidence;
+                        
+                        document.getElementById('volatilityValue').textContent = `${vol?.toFixed(1) || '--'}%`;
+                        document.getElementById('confidenceValue').textContent = `${conf?.toFixed(1) || '--'}%`;
+                        
+                        const dirElement = document.getElementById('directionValue');
+                        if (dir > 0) {
+                            dirElement.textContent = 'BULL';
+                            dirElement.className = 'prediction-value green';
+                        } else if (dir < 0) {
+                            dirElement.textContent = 'BEAR';
+                            dirElement.className = 'prediction-value red';
+                        } else {
+                            dirElement.textContent = 'NEUTRAL';
+                            dirElement.className = 'prediction-value';
+                        }
+                        
+                        document.getElementById('riskValue').textContent = (data.risk_level || 'medium').toUpperCase();
+                        document.getElementById('overallRisk').textContent = (data.risk_level || 'medium').toUpperCase();
+                    }
+                }
+            } catch (error) {
+                console.error('Failed to fetch ML data:', error);
+            }
+        }
+
+        async function activateEmergency() {
+            if (!contracts.circuitBreaker) return;
+            
+            if (!confirm('WARNING: This will halt all supply adjustments. Continue?')) {
+                return;
+            }
+            
+            try {
+                const tx = await contracts.circuitBreaker.activateEmergency();
+                await tx.wait();
+                alert('Emergency mode activated!');
+                await updateEmergency();
+            } catch (error) {
+                console.error('Failed to activate emergency:', error);
+                alert('Failed to activate emergency: ' + (error.reason || error.message));
+            }
+        }
+
+        // Initialize chart
+        function initChart() {
+            const ctx = document.getElementById('predictionChart').getContext('2d');
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Volatility %',
+                            data: [],
+                            borderColor: '#F0B90B',
+                            backgroundColor: 'rgba(240, 185, 11, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Confidence %',
+                            data: [],
+                            borderColor: '#00D9FF',
+                            backgroundColor: 'transparent',
+                            tension: 0.4,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#848E9C',
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            grid: { color: '#2B2F3E' },
+                            ticks: { color: '#848E9C', maxTicksLimit: 8 }
+                        },
+                        y: {
+                            display: true,
+                            grid: { color: '#2B2F3E' },
+                            ticks: { color: '#848E9C' },
+                            min: 0,
+                            max: 100
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+
+        function addChartData(volatility, confidence) {
+            const now = new Date().toLocaleTimeString();
+            
+            chart.data.labels.push(now);
+            chart.data.datasets[0].data.push(volatility);
+            chart.data.datasets[1].data.push(confidence);
+            
+            if (chart.data.labels.length > 20) {
+                chart.data.labels.shift();
+                chart.data.datasets[0].data.shift();
+                chart.data.datasets[1].data.shift();
+            }
+            
+            chart.update('none');
+        }
+
+        // Start app
+        window.addEventListener('load', () => {
+            init();
+            initChart();
+        });
+    </script>
+</body>
+</html>
