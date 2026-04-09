@@ -1,1559 +1,1004 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AMAT Protocol | Autonomous Monetary AI Token</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-primary: #0B0E11;
-            --bg-secondary: #131722;
-            --bg-tertiary: #1E222D;
-            --bg-card: #1E222D;
-            --border-color: #2B2F3E;
-            --text-primary: #D1D4DC;
-            --text-secondary: #848E9C;
-            --text-muted: #5C6173;
-            --accent-primary: #F0B90B;
-            --accent-green: #0ECB81;
-            --accent-red: #F6465D;
-            --accent-blue: #0052FF;
-            --accent-purple: #7645D9;
-            --accent-cyan: #00D9FF;
-            --gradient-gold: linear-gradient(135deg, #F0B90B 0%, #D4AF37 100%);
-            --gradient-dark: linear-gradient(180deg, #131722 0%, #0B0E11 100%);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Header */
-        .header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 24px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--gradient-gold);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            font-size: 16px;
-            color: #000;
-        }
-
-        .logo-text {
-            font-size: 20px;
-            font-weight: 700;
-            background: var(--gradient-gold);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav {
-            display: flex;
-            gap: 32px;
-        }
-
-        .nav-item {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.2s;
-            cursor: pointer;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            color: var(--text-primary);
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--gradient-gold);
-            color: #000;
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            background: var(--border-color);
-        }
-
-        .btn-danger {
-            background: var(--accent-red);
-            color: #fff;
-        }
-
-        .wallet-btn {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .wallet-btn:hover {
-            background: var(--border-color);
-        }
-
-        /* Main Container */
-        .main {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        /* Hero Section */
-        .hero {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            padding: 48px;
-            margin-bottom: 24px;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 50%;
-            height: 100%;
-            background: radial-gradient(ellipse at center right, rgba(240, 185, 11, 0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(240, 185, 11, 0.1);
-            border: 1px solid rgba(240, 185, 11, 0.3);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--accent-primary);
-            margin-bottom: 24px;
-        }
-
-        .hero-badge::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .hero h1 {
-            font-size: 48px;
-            font-weight: 800;
-            margin-bottom: 16px;
-            background: linear-gradient(135deg, #fff 0%, var(--text-secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            font-size: 18px;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 32px;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 16px;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .stat-card {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 24px;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s;
-        }
-
-        .stat-card:hover {
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
-        }
-
-        .stat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
-        .stat-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-        }
-
-        .stat-icon.gold { background: rgba(240, 185, 11, 0.1); }
-        .stat-icon.green { background: rgba(14, 203, 129, 0.1); }
-        .stat-icon.red { background: rgba(246, 70, 93, 0.1); }
-        .stat-icon.blue { background: rgba(0, 82, 255, 0.1); }
-        .stat-icon.purple { background: rgba(118, 69, 217, 0.1); }
-        .stat-icon.cyan { background: rgba(0, 217, 255, 0.1); }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .stat-value.gold { color: var(--accent-primary); }
-        .stat-value.green { color: var(--accent-green); }
-        .stat-value.red { color: var(--accent-red); }
-        .stat-value.blue { color: var(--accent-blue); }
-        .stat-value.purple { color: var(--accent-purple); }
-        .stat-value.cyan { color: var(--accent-cyan); }
-
-        .stat-change {
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .stat-change.up { color: var(--accent-green); }
-        .stat-change.down { color: var(--accent-red); }
-
-        /* Two Column Layout */
-        .content-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
-        }
-
-        .card {
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .card-body {
-            padding: 24px;
-        }
-
-        /* Prediction Panel */
-        .prediction-main {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            margin-bottom: 24px;
-        }
-
-        .prediction-header {
-            padding: 24px;
-            background: linear-gradient(135deg, rgba(240, 185, 11, 0.05) 0%, transparent 100%);
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .prediction-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .prediction-title h3 {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .live-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(14, 203, 129, 0.1);
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--accent-green);
-        }
-
-        .live-badge::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            background: var(--accent-green);
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-
-        .prediction-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-            padding: 24px;
-        }
-
-        .prediction-item {
-            text-align: center;
-        }
-
-        .prediction-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-
-        .prediction-value {
-            font-size: 32px;
-            font-weight: 700;
-        }
-
-        .prediction-value.gold { color: var(--accent-primary); }
-        .prediction-value.green { color: var(--accent-green); }
-        .prediction-value.red { color: var(--accent-red); }
-        .prediction-value.cyan { color: var(--accent-cyan); }
-
-        /* Mode Indicator */
-        .mode-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .mode-steady {
-            background: rgba(14, 203, 129, 0.1);
-            color: var(--accent-green);
-        }
-
-        .mode-grow {
-            background: rgba(0, 217, 255, 0.1);
-            color: var(--accent-cyan);
-        }
-
-        .mode-preserve {
-            background: rgba(240, 185, 11, 0.1);
-            color: var(--accent-primary);
-        }
-
-        .mode-survive {
-            background: rgba(246, 70, 93, 0.1);
-            color: var(--accent-red);
-        }
-
-        /* Chart Container */
-        .chart-container {
-            height: 300px;
-            padding: 24px;
-        }
-
-        /* Sidebar Cards */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        /* Allocation Chart */
-        .allocation-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .allocation-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .allocation-color {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
-        }
-
-        .allocation-info {
-            flex: 1;
-        }
-
-        .allocation-name {
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 4px;
-        }
-
-        .allocation-bar {
-            height: 6px;
-            background: var(--bg-tertiary);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .allocation-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.5s;
-        }
-
-        .allocation-value {
-            font-size: 14px;
-            font-weight: 600;
-            min-width: 50px;
-            text-align: right;
-        }
-
-        /* Rate Limits */
-        .limits-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .limit-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .limit-item:last-child {
-            border-bottom: none;
-        }
-
-        .limit-label {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .limit-value {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .limit-value.green { color: var(--accent-green); }
-        .limit-value.red { color: var(--accent-red); }
-
-        /* Treasury Info */
-        .treasury-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .treasury-item:last-child {
-            border-bottom: none;
-        }
-
-        /* Emergency Banner */
-        .emergency-banner {
-            background: linear-gradient(90deg, var(--accent-red), #c0392b);
-            color: white;
-            padding: 16px 24px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            animation: emergency-pulse 2s infinite;
-        }
-
-        .emergency-banner.active {
-            display: flex;
-        }
-
-        @keyframes emergency-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-
-        .emergency-banner svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        /* Supply Adjustment */
-        .supply-action {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            padding: 20px;
-            background: var(--bg-tertiary);
-            border-radius: 12px;
-            margin-top: 16px;
-        }
-
-        .supply-arrow {
-            font-size: 24px;
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-
-        .supply-arrow.up {
-            background: rgba(14, 203, 129, 0.1);
-            color: var(--accent-green);
-        }
-
-        .supply-arrow.down {
-            background: rgba(246, 70, 93, 0.1);
-            color: var(--accent-red);
-        }
-
-        .supply-arrow.neutral {
-            background: var(--bg-secondary);
-            color: var(--text-secondary);
-        }
-
-        .supply-info {
-            text-align: center;
-        }
-
-        .supply-info strong {
-            font-size: 20px;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .supply-info span {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        /* Footer */
-        .footer {
-            border-top: 1px solid var(--border-color);
-            padding: 24px;
-            margin-top: 48px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-            .prediction-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav {
-                display: none;
-            }
-            .hero {
-                padding: 24px;
-            }
-            .hero h1 {
-                font-size: 32px;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            .prediction-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Loading State */
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
-
-        .spinner {
-            width: 32px;
-            height: 32px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--accent-primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Contract Info */
-        .contract-info {
-            font-size: 12px;
-            color: var(--text-muted);
-            padding: 16px;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            word-break: break-all;
-        }
-
-        /* Progress Bar */
-        .progress-bar {
-            height: 8px;
-            background: var(--bg-tertiary);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 12px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--gradient-gold);
-            transition: width 0.3s;
-        }
-
-        /* Risk Meter */
-        .risk-meter {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .risk-bar {
-            flex: 1;
-            height: 6px;
-            background: var(--bg-tertiary);
-            border-radius: 3px;
-            overflow: hidden;
-            display: flex;
-        }
-
-        .risk-segment {
-            height: 100%;
-            transition: width 0.3s;
-        }
-
-        .risk-segment.low { background: var(--accent-green); }
-        .risk-segment.medium { background: var(--accent-primary); }
-        .risk-segment.high { background: var(--accent-red); }
-
-        .risk-label {
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .risk-label.low { color: var(--accent-green); }
-        .risk-label.medium { color: var(--accent-primary); }
-        .risk-label.high { color: var(--accent-red); }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NeuralMint (NMNT) — AI Crypto Token Driven by Bitcoin</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 140'%3E%3Cpolygon points='70,8 122,38 122,98 70,128 18,98 18,38' fill='%231a1400'/%3E%3Cpolygon points='70,8 122,38 122,98 70,128 18,98 18,38' fill='none' stroke='%23F7A600' stroke-width='4'/%3E%3Crect x='47' y='44' width='9' height='48' rx='2' fill='%23F7A600'/%3E%3Crect x='84' y='44' width='9' height='48' rx='2' fill='%23F7A600'/%3E%3Cline x1='56' y1='44' x2='84' y2='92' stroke='%23F7A600' stroke-width='9' stroke-linecap='round'/%3E%3Ccircle cx='47' cy='44' r='4' fill='%23FFC740'/%3E%3Ccircle cx='93' cy='92' r='4' fill='%23FFC740'/%3E%3C/svg%3E"/>
+<meta property="og:title" content="NeuralMint (NMNT)"/>
+<meta property="og:description" content="The first AI crypto token whose tokenomics are driven by Bitcoin price and Fear &amp; Greed Index — live on Polygon."/>
+<meta property="og:image" content="https://neuralmint-dapp.vercel.app/og-image.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="NeuralMint (NMNT) — BTC-Powered AI Token"/>
+<meta name="theme-color" content="#F7A600"/>
+<meta name="description" content="NeuralMint (NMNT) — The first DeFi token whose burn rate, yield, and supply automatically adapt to Bitcoin market conditions every 4 hours."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:      #080b14;
+  --bg2:     #0d1220;
+  --bg3:     #131926;
+  --border:  rgba(255,165,0,0.12);
+  --border2: rgba(255,165,0,0.25);
+  --gold:    #f7a600;
+  --gold2:   #ffc740;
+  --orange:  #e8682c;
+  --red:     #e84848;
+  --green:   #2dc78a;
+  --blue:    #4a9eff;
+  --purple:  #9b6dff;
+  --text:    #e8eaf2;
+  --dim:     #5a6070;
+  --dim2:    #8a92a8;
+  --ff-head: 'Syne', sans-serif;
+  --ff-body: 'Inter', sans-serif;
+  --ff-mono: 'IBM Plex Mono', monospace;
+  --r:       12px;
+  --r-sm:    8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--ff-body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+
+/* ── BACKGROUND ─────────────────────────────────────────────────────── */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 800px 600px at 50% -100px, rgba(247,166,0,0.06) 0%, transparent 70%),
+  radial-gradient(ellipse 400px 400px at 90% 60%, rgba(74,158,255,0.04) 0%, transparent 60%)}
+.bg-dots{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle, rgba(255,165,0,0.06) 1px, transparent 1px);
+  background-size:32px 32px}
+
+/* ── LAYOUT ─────────────────────────────────────────────────────────── */
+.app{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 24px 80px}
+
+/* ── HEADER ─────────────────────────────────────────────────────────── */
+header{display:flex;align-items:center;justify-content:space-between;padding:24px 0;border-bottom:1px solid var(--border);margin-bottom:0}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{flex-shrink:0;width:38px;height:38px}
+.logo-name{font-family:var(--ff-head);font-size:18px;font-weight:800;letter-spacing:-0.02em}
+.logo-name span{color:var(--gold)}
+.logo-ticker{font-family:var(--ff-mono);font-size:11px;color:var(--dim2);background:rgba(247,166,0,0.1);padding:2px 8px;border-radius:4px;border:1px solid rgba(247,166,0,0.2)}
+.header-right{display:flex;align-items:center;gap:12px}
+nav{display:flex;gap:2px}
+.nav-btn{background:none;border:none;color:var(--dim2);cursor:pointer;padding:8px 14px;border-radius:var(--r-sm);font-family:var(--ff-body);font-size:13px;font-weight:500;transition:all .15s}
+.nav-btn:hover{color:var(--text);background:rgba(255,255,255,0.04)}
+.nav-btn.active{color:var(--gold);background:rgba(247,166,0,0.08)}
+
+/* ── WALLET BTN ─────────────────────────────────────────────────────── */
+.wallet-btn{padding:9px 20px;border-radius:var(--r-sm);border:1px solid rgba(247,166,0,0.4);background:rgba(247,166,0,0.08);color:var(--gold);cursor:pointer;font-family:var(--ff-head);font-weight:600;font-size:13px;transition:all .15s;white-space:nowrap}
+.wallet-btn:hover{background:rgba(247,166,0,0.15);border-color:var(--gold)}
+.wallet-pill{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:20px;border:1px solid var(--border2);font-family:var(--ff-mono);font-size:12px;color:var(--dim2)}
+.w-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+
+/* ── HERO ────────────────────────────────────────────────────────────── */
+.hero{padding:80px 0 60px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;border:1px solid rgba(247,166,0,0.3);background:rgba(247,166,0,0.06);font-size:12px;color:var(--gold);margin-bottom:28px;font-family:var(--ff-mono)}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+h1{font-family:var(--ff-head);font-size:clamp(38px,6vw,68px);font-weight:800;line-height:1.05;letter-spacing:-0.03em;margin-bottom:20px}
+h1 .accent{color:var(--gold)}
+h1 .accent2{color:var(--blue)}
+.hero-sub{font-size:17px;color:var(--dim2);max-width:580px;margin:0 auto 40px;line-height:1.75;font-weight:300}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-primary{padding:14px 28px;border-radius:var(--r-sm);background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;border:none;cursor:pointer;font-family:var(--ff-head);font-weight:700;font-size:15px;transition:all .15s;text-decoration:none;display:inline-block}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+.btn-outline{padding:13px 28px;border-radius:var(--r-sm);border:1px solid var(--border2);color:var(--text);background:none;cursor:pointer;font-family:var(--ff-head);font-weight:600;font-size:15px;transition:all .15s;text-decoration:none;display:inline-block}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);background:rgba(247,166,0,0.04)}
+
+/* ── BTC SIGNAL BAR ─────────────────────────────────────────────────── */
+.btc-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:24px}
+.btc-cell{background:var(--bg2);padding:16px 20px;text-align:center}
+.btc-cell:first-child{border-radius:var(--r) 0 0 var(--r)}
+.btc-cell:last-child{border-radius:0 var(--r) var(--r) 0}
+.btc-val{font-family:var(--ff-mono);font-size:18px;font-weight:500;margin-bottom:3px}
+.btc-lbl{font-size:11px;color:var(--dim2);text-transform:uppercase;letter-spacing:.06em}
+.up{color:var(--green)}.down{color:var(--red)}.neutral{color:var(--dim2)}
+.gold-txt{color:var(--gold)}
+
+/* ── MOOD BADGE ─────────────────────────────────────────────────────── */
+.mood-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;font-family:var(--ff-mono)}
+.mood-extreme-fear{background:rgba(232,72,72,.15);color:#f87171;border:1px solid rgba(232,72,72,.3)}
+.mood-fear{background:rgba(232,104,44,.12);color:#fb923c;border:1px solid rgba(232,104,44,.25)}
+.mood-neutral{background:rgba(90,96,112,.15);color:var(--dim2);border:1px solid rgba(90,96,112,.3)}
+.mood-greed{background:rgba(45,199,138,.1);color:#4ade80;border:1px solid rgba(45,199,138,.25)}
+.mood-extreme-greed{background:rgba(74,158,255,.1);color:#60a5fa;border:1px solid rgba(74,158,255,.25)}
+
+/* ── SECTION ─────────────────────────────────────────────────────────── */
+.section{display:none}.section.active{display:block}
+.section-title{font-family:var(--ff-head);font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--dim2);margin-bottom:16px}
+
+/* ── STATS GRID ─────────────────────────────────────────────────────── */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr}}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;position:relative;overflow:hidden;transition:border-color .2s}
+.stat-card:hover{border-color:var(--border2)}
+.stat-card::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--accent,transparent) 0%,transparent 60%);opacity:.04;pointer-events:none}
+.stat-gold{--accent:var(--gold)}
+.stat-blue{--accent:var(--blue)}
+.stat-green{--accent:var(--green)}
+.stat-red{--accent:var(--red)}
+.stat-purple{--accent:var(--purple)}
+.stat-orange{--accent:var(--orange)}
+.stat-val{font-family:var(--ff-mono);font-size:22px;font-weight:500;line-height:1.2}
+.stat-unit{font-size:11px;color:var(--dim2);margin:2px 0 8px;font-family:var(--ff-mono)}
+.stat-lbl{font-size:12px;color:var(--dim2);font-weight:500}
+
+/* ── CARD ────────────────────────────────────────────────────────────── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;margin-bottom:16px}
+.card-hdr{font-size:12px;font-weight:600;color:var(--dim2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.card-title{font-family:var(--ff-head);font-size:16px;font-weight:700;margin-bottom:10px}
+
+/* ── PROGRESS ────────────────────────────────────────────────────────── */
+.prog-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;margin:8px 0}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--orange));transition:width .5s ease}
+.prog-fill.green{background:linear-gradient(90deg,var(--green),#20a870)}
+.prog-row{display:flex;justify-content:space-between;font-size:12px;color:var(--dim2);margin-top:4px}
+
+/* ── FEAR GREED GAUGE ────────────────────────────────────────────────── */
+.fg-gauge{display:flex;align-items:center;gap:16px;padding:16px;background:var(--bg3);border-radius:var(--r-sm);margin-bottom:16px}
+.fg-num{font-family:var(--ff-mono);font-size:32px;font-weight:500;min-width:60px}
+.fg-bar-wrap{flex:1}
+.fg-bar{height:10px;border-radius:99px;background:linear-gradient(90deg,#ef4444,#f97316,#eab308,#22c55e,#3b82f6);position:relative;margin-bottom:6px}
+.fg-marker{position:absolute;top:-3px;width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid var(--bg);transform:translateX(-50%);transition:left .5s ease;box-shadow:0 0 8px rgba(0,0,0,.5)}
+.fg-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--dim2)}
+
+/* ── LOCK OPTIONS ─────────────────────────────────────────────────────── */
+.lock-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+@media(max-width:600px){.lock-grid{grid-template-columns:1fr 1fr}}
+.lock-opt{border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 10px;cursor:pointer;text-align:center;background:var(--bg3);transition:all .15s;display:flex;flex-direction:column;gap:4px}
+.lock-opt:hover{border-color:var(--border2)}
+.lock-opt.sel{border-color:var(--gold);background:rgba(247,166,0,.07)}
+.lock-name{font-size:13px;font-weight:600}
+.lock-apy{font-family:var(--ff-mono);font-size:18px;font-weight:500;color:var(--green)}
+.lock-bonus{font-size:11px;color:var(--dim2)}
+
+/* ── INPUT ────────────────────────────────────────────────────────────── */
+.input-row{display:flex;gap:8px;margin-bottom:10px}
+.tok-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:13px 16px;color:var(--text);font-family:var(--ff-mono);font-size:18px;outline:none;transition:border-color .15s}
+.tok-input:focus{border-color:rgba(247,166,0,.4)}
+.tok-input::placeholder{color:var(--dim)}
+.max-btn{background:rgba(247,166,0,.1);color:var(--gold);border:1px solid rgba(247,166,0,.25);border-radius:var(--r-sm);padding:0 16px;cursor:pointer;font-weight:700;font-size:12px;font-family:var(--ff-mono);white-space:nowrap}
+.estimate{font-size:13px;color:var(--dim2);margin-bottom:12px}
+
+/* ── ACTION BUTTONS ───────────────────────────────────────────────────── */
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;border:none;cursor:pointer;padding:13px 24px;border-radius:var(--r-sm);font-family:var(--ff-head);font-weight:700;font-size:14px;width:100%;transition:opacity .15s;margin-top:4px}
+.btn-gold:hover{opacity:.85}
+.btn-gold:disabled{opacity:.35;cursor:not-allowed}
+.btn-sec{background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--text);cursor:pointer;padding:11px 20px;border-radius:var(--r-sm);font-family:var(--ff-head);font-weight:600;font-size:13px;flex:1;transition:all .15s}
+.btn-sec:hover{background:rgba(255,255,255,.08)}
+.btn-sec:disabled{opacity:.35;cursor:not-allowed}
+.btn-danger{background:rgba(232,72,72,.08);border:1px solid rgba(232,72,72,.25);color:#f87171;cursor:pointer;padding:11px 20px;border-radius:var(--r-sm);font-family:var(--ff-head);font-weight:600;font-size:13px;flex:1;transition:all .15s}
+.btn-danger:disabled{opacity:.35;cursor:not-allowed}
+.action-row{display:flex;gap:8px;margin-top:12px}
+
+/* ── POSITION CARD ─────────────────────────────────────────────────────── */
+.pos-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.pos-item{background:var(--bg3);border-radius:var(--r-sm);padding:12px 14px}
+.pos-big{font-family:var(--ff-mono);font-size:18px;font-weight:500;display:block}
+.pos-key{font-size:12px;color:var(--dim2);margin-top:2px;display:block}
+.pos-big.green{color:var(--green)}
+
+/* ── ORACLE FLOW ───────────────────────────────────────────────────────── */
+.flow-step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.flow-n{width:28px;height:28px;border-radius:50%;background:rgba(247,166,0,.1);border:1px solid rgba(247,166,0,.25);color:var(--gold);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-family:var(--ff-mono)}
+.flow-title{font-weight:600;font-size:14px;margin-bottom:3px}
+.flow-desc{font-size:13px;color:var(--dim2);line-height:1.6}
+
+/* ── HISTORY ────────────────────────────────────────────────────────────── */
+.hist-row{display:flex;gap:16px;padding:10px 14px;background:var(--bg3);border-radius:var(--r-sm);margin-bottom:6px;font-family:var(--ff-mono);font-size:12px;align-items:center;flex-wrap:wrap}
+.hist-time{color:var(--dim2)}
+
+/* ── HOW IT WORKS ────────────────────────────────────────────────────────── */
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+@media(max-width:640px){.how-grid{grid-template-columns:1fr}}
+.how-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.how-icon{display:block;margin-bottom:12px;width:28px;height:28px}
+.how-title{font-family:var(--ff-head);font-size:16px;font-weight:700;margin-bottom:8px}
+.how-desc{font-size:13px;color:var(--dim2);line-height:1.7}
+
+/* ── TOAST ────────────────────────────────────────────────────────────── */
+#toast{position:fixed;bottom:24px;right:24px;z-index:9999;pointer-events:none}
+.toast-item{padding:13px 18px;border-radius:var(--r-sm);font-size:13px;font-weight:500;margin-top:8px;max-width:300px;animation:toastin .2s ease;pointer-events:all}
+.toast-info{background:var(--bg3);border:1px solid var(--border2);color:var(--text)}
+.toast-ok{background:rgba(45,199,138,.12);border:1px solid rgba(45,199,138,.3);color:#4ade80}
+.toast-err{background:rgba(232,72,72,.12);border:1px solid rgba(232,72,72,.3);color:#f87171}
+@keyframes toastin{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* ── LOADING ──────────────────────────────────────────────────────────── */
+.loading{text-align:center;padding:48px;color:var(--dim2);animation:fadepulse 1.4s ease-in-out infinite}
+@keyframes fadepulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* ── HERO CONNECT ─────────────────────────────────────────────────────── */
+.hero-connect{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:48px 32px;text-align:center;margin-top:16px}
+.hc-title{font-family:var(--ff-head);font-size:28px;font-weight:800;margin-bottom:12px}
+.hc-sub{color:var(--dim2);margin-bottom:28px;font-size:15px;line-height:1.7}
+
+/* ── FEATURE LIST ─────────────────────────────────────────────────────── */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:40px 0}
+@media(max-width:640px){.features{grid-template-columns:1fr}}
+.feat{padding:20px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);text-align:left}
+.feat-icon{display:block;margin-bottom:12px;width:26px;height:26px}
+.feat-title{font-family:var(--ff-head);font-weight:700;font-size:14px;margin-bottom:6px}
+.feat-desc{font-size:13px;color:var(--dim2);line-height:1.6}
+
+code{font-family:var(--ff-mono);font-size:12px;background:rgba(255,255,255,.06);padding:2px 6px;border-radius:4px}
+.dim{color:var(--dim2)}
+.divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+.lock-notice{font-size:12px;color:var(--orange);background:rgba(232,104,44,.08);border:1px solid rgba(232,104,44,.2);border-radius:var(--r-sm);padding:8px 12px;margin-bottom:10px}
+
+/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
+@media(max-width:640px){
+  .btc-bar{grid-template-columns:1fr 1fr}
+  .btc-cell:nth-child(1){border-radius:var(--r) 0 0 0}
+  .btc-cell:nth-child(2){border-radius:0 var(--r) 0 0}
+  .btc-cell:nth-child(3){border-radius:0 0 0 var(--r)}
+  .btc-cell:nth-child(4){border-radius:0 0 var(--r) 0}
+  nav{display:none}
+  .stats-grid{grid-template-columns:1fr 1fr}
+}
+</style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-content">
-            <div class="logo">
-                <div class="logo-icon">AM</div>
-                <span class="logo-text">AMAT</span>
-            </div>
-            <nav class="nav">
-                <a class="nav-item active">Dashboard</a>
-                <a class="nav-item">Staking</a>
-                <a class="nav-item">Governance</a>
-                <a class="nav-item">Analytics</a>
-                <a class="nav-item">Docs</a>
-            </nav>
-            <div class="header-actions">
-                <button class="btn btn-primary" id="stakeBtn">
-                    <span>Stake AMAT</span>
-                </button>
-                <button class="wallet-btn" id="connectWallet">
-                    Connect Wallet
-                </button>
-            </div>
-        </div>
-    </header>
+<div class="bg-dots"></div>
 
-    <main class="main">
-        <!-- Emergency Banner -->
-        <div class="emergency-banner" id="emergencyBanner">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/>
-                <line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-            <strong>EMERGENCY MODE ACTIVE</strong> - Supply adjustments halted
-        </div>
+<div class="app">
 
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-badge">
-                <span>AI-Powered Autonomous Monetary Policy</span>
-            </div>
-            <h1>Autonomous Monetary<br>AI Token</h1>
-            <p>The first DeFi protocol with real-time ML-driven supply adjustments. Community-governed with institutional-grade security.</p>
-            <div class="hero-actions">
-                <button class="btn btn-primary" id="buyBtn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                    </svg>
-                    Buy AMAT
-                </button>
-                <button class="btn btn-secondary" id="learnBtn">Learn More</button>
-            </div>
-        </section>
+<!-- ── HEADER ─────────────────────────────────────────────────────────── -->
+<header>
+  <a class="logo" href="#">
+    <svg class="logo-mark" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="#1a1400"/>
+      <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="3.5"/>
+      <polygon points="70,22 110,44 110,90 70,112 30,90 30,44" fill="none" stroke="#F7A600" stroke-width="1" opacity="0.3"/>
+      <line x1="105" y1="36" x2="118" y2="25" stroke="#F7A600" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+      <circle cx="118" cy="25" r="3" fill="#F7A600" opacity="0.6"/>
+      <line x1="35" y1="100" x2="22" y2="113" stroke="#F7A600" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+      <circle cx="22" cy="113" r="3" fill="#F7A600" opacity="0.6"/>
+      <rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+      <rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+      <line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/>
+      <circle cx="47" cy="44" r="4" fill="#FFC740"/>
+      <circle cx="93" cy="92" r="4" fill="#FFC740"/>
+    </svg>
+    <span class="logo-name">Neural<span>Mint</span></span>
+    <span class="logo-ticker">NMNT</span>
+  </a>
+  <nav>
+    <button class="nav-btn active" onclick="showTab('dashboard',this)">Dashboard</button>
+    <button class="nav-btn" onclick="showTab('stake',this)">Stake</button>
+    <button class="nav-btn" onclick="showTab('oracle',this)">Oracle</button>
+    <button class="nav-btn" onclick="showTab('about',this)">About</button>
+  </nav>
+  <div class="header-right">
+    <div id="walletArea">
+      <button class="wallet-btn" onclick="connectWallet()">Connect Wallet</button>
+    </div>
+  </div>
+</header>
 
-        <!-- Stats Grid -->
-        <section class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Total Supply</span>
-                    <div class="stat-icon gold">$</div>
-                </div>
-                <div class="stat-value gold" id="totalSupply">--</div>
-                <div class="stat-change up" id="supplyChange">--</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Treasury Balance</span>
-                    <div class="stat-icon blue">T</div>
-                </div>
-                <div class="stat-value blue" id="treasuryBalance">--</div>
-                <div class="stat-change" id="tcrValue">TCR: --</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Current Mode</span>
-                    <div class="stat-icon green" id="modeIcon">M</div>
-                </div>
-                <div class="stat-value green" id="currentMode">--</div>
-                <div class="stat-change" id="modeDescription">--</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-header">
-                    <span class="stat-label">Next Epoch</span>
-                    <div class="stat-icon purple">T</div>
-                </div>
-                <div class="stat-value purple" id="nextEpoch">--</div>
-                <div class="stat-change" id="epochStatus">--</div>
-            </div>
-        </section>
+<!-- ── DASHBOARD ──────────────────────────────────────────────────────── -->
+<div id="sec-dashboard" class="section active">
 
-        <!-- Main Prediction Panel -->
-        <section class="prediction-main">
-            <div class="prediction-header">
-                <div class="prediction-title">
-                    <h3>AI Market Prediction</h3>
-                    <div class="live-badge">LIVE</div>
-                </div>
-                <div class="mode-indicator mode-steady" id="protocolMode">
-                    STEADY MODE
-                </div>
-            </div>
-            <div class="prediction-grid">
-                <div class="prediction-item">
-                    <div class="prediction-label">Volatility</div>
-                    <div class="prediction-value gold" id="volatilityValue">--</div>
-                </div>
-                <div class="prediction-item">
-                    <div class="prediction-label">Direction</div>
-                    <div class="prediction-value" id="directionValue">--</div>
-                </div>
-                <div class="prediction-item">
-                    <div class="prediction-label">Confidence</div>
-                    <div class="prediction-value cyan" id="confidenceValue">--</div>
-                </div>
-                <div class="prediction-item">
-                    <div class="prediction-label">Risk Level</div>
-                    <div class="prediction-value" id="riskValue">--</div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="chart-container">
-                    <canvas id="predictionChart"></canvas>
-                </div>
-                <div class="supply-action" id="supplyAction">
-                    <div class="supply-arrow neutral" id="supplyArrow">
-                        <span>→</span>
-                    </div>
-                    <div class="supply-info">
-                        <strong id="supplyActionText">No Action Required</strong>
-                        <span id="supplyActionDesc">Protocol operating within normal parameters</span>
-                    </div>
-                </div>
-            </div>
-        </section>
+  <!-- Hero (shown when not connected) -->
+  <div id="heroSection">
+    <div class="hero" style="position:relative;overflow:hidden">
+      <div style="position:absolute;right:-60px;top:-40px;opacity:0.04;pointer-events:none;z-index:0"><svg width="320" height="320" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><circle cx="70" cy="70" r="68" fill="none" stroke="#F7A600" stroke-width="2"/><circle cx="70" cy="70" r="58" fill="none" stroke="#F7A600" stroke-width="1"/><rect x="42" y="40" width="9" height="56" rx="2" fill="#F7A600"/><rect x="89" y="40" width="9" height="56" rx="2" fill="#F7A600"/><line x1="51" y1="40" x2="89" y2="96" stroke="#F7A600" stroke-width="10" stroke-linecap="round"/></svg></div>
+      <div style="position:relative;z-index:1">
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Live on Polygon · Bitcoin-Powered AI Oracle
+      </div>
+      <h1>The Token That<br/>Thinks Like <span class="accent">Bitcoin</span></h1>
+      <p class="hero-sub">NeuralMint (NMNT) automatically adjusts its burn rate, staking yield, and supply every 4 hours based on Bitcoin's price and market sentiment — no human needed.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="connectWallet()">Connect Wallet</button>
+        <a class="btn-outline" href="#" onclick="showTab('about',document.querySelectorAll('.nav-btn')[3])">How it works</a>
+      </div>
+      </div><!-- /z-index wrapper -->
+    </div><!-- /hero -->
 
-        <!-- Content Grid -->
-        <section class="content-grid">
-            <!-- Main Content -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Protocol Controls</h3>
-                    <button class="btn btn-danger" id="emergencyBtn" disabled>
-                        Emergency Mode
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="limits-list">
-                        <div class="limit-item">
-                            <span class="limit-label">Mint per Epoch</span>
-                            <span class="limit-value green">+2.00%</span>
-                        </div>
-                        <div class="limit-item">
-                            <span class="limit-label">Burn per Epoch</span>
-                            <span class="limit-value red">-3.00%</span>
-                        </div>
-                        <div class="limit-item">
-                            <span class="limit-label">Sell Tax (Hourly)</span>
-                            <span class="limit-value">1.00%</span>
-                        </div>
-                        <div class="limit-item">
-                            <span class="limit-label">Whale Threshold</span>
-                            <span class="limit-value">5.00%</span>
-                        </div>
-                        <div class="limit-item">
-                            <span class="limit-label">Emergency Duration</span>
-                            <span class="limit-value">24 hours</span>
-                        </div>
-                    </div>
-                    <div class="contract-info" id="contractInfo">
-                        Contract: Connecting to Polygon network...
-                    </div>
-                </div>
-            </div>
+    <!-- BTC signal preview (live, no wallet needed) -->
+    <div class="section-title">Live Bitcoin Signal</div>
+    <div class="btc-bar" id="heroBtcBar">
+      <div class="btc-cell"><div class="btc-val gold-txt" id="h-btcprice">—</div><div class="btc-lbl">BTC Price</div></div>
+      <div class="btc-cell"><div class="btc-val" id="h-btcchange">—</div><div class="btc-lbl">24h Change</div></div>
+      <div class="btc-cell"><div class="btc-val" id="h-fg">—</div><div class="btc-lbl">Fear & Greed</div></div>
+      <div class="btc-cell"><div class="btc-val" id="h-mood">—</div><div class="btc-lbl">Market Mood</div></div>
+    </div>
 
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <!-- Treasury Allocation -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Treasury Allocation</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="allocation-list">
-                            <div class="allocation-item">
-                                <div class="allocation-color" style="background: var(--accent-green);"></div>
-                                <div class="allocation-info">
-                                    <div class="allocation-name">Stablecoins</div>
-                                    <div class="allocation-bar">
-                                        <div class="allocation-fill" style="width: 30%; background: var(--accent-green);"></div>
-                                    </div>
-                                </div>
-                                <div class="allocation-value">30%</div>
-                            </div>
-                            <div class="allocation-item">
-                                <div class="allocation-color" style="background: var(--accent-blue);"></div>
-                                <div class="allocation-info">
-                                    <div class="allocation-name">Yield Positions</div>
-                                    <div class="allocation-bar">
-                                        <div class="allocation-fill" style="width: 30%; background: var(--accent-blue);"></div>
-                                    </div>
-                                </div>
-                                <div class="allocation-value">30%</div>
-                            </div>
-                            <div class="allocation-item">
-                                <div class="allocation-color" style="background: var(--accent-primary);"></div>
-                                <div class="allocation-info">
-                                    <div class="allocation-name">Buyback Reserve</div>
-                                    <div class="allocation-bar">
-                                        <div class="allocation-fill" style="width: 20%; background: var(--accent-primary);"></div>
-                                    </div>
-                                </div>
-                                <div class="allocation-value">20%</div>
-                            </div>
-                            <div class="allocation-item">
-                                <div class="allocation-color" style="background: var(--accent-purple);"></div>
-                                <div class="allocation-info">
-                                    <div class="allocation-name">Opportunity Fund</div>
-                                    <div class="allocation-bar">
-                                        <div class="allocation-fill" style="width: 20%; background: var(--accent-purple);"></div>
-                                    </div>
-                                </div>
-                                <div class="allocation-value">20%</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="features">
+      <div class="feat"><span class="feat-icon"><svg width="26" height="26" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="#1a1400"/><polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="6"/><rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/><rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/><line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/><circle cx="47" cy="44" r="4" fill="#FFC740"/><circle cx="93" cy="92" r="4" fill="#FFC740"/></svg></span><div class="feat-title">Bitcoin-Driven</div><div class="feat-desc">Burn rate &amp; APY automatically adapt to BTC price movements and the Fear &amp; Greed Index every 4 hours.</div></div>
+      <div class="feat"><span class="feat-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="feat-title">Auto-Deflationary</div><div class="feat-desc">Every transfer burns 0–5% of tokens. In volatile markets, more tokens are burned, making NMNT scarcer.</div></div>
+      <div class="feat"><span class="feat-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="11" width="18" height="11" rx="2" stroke="#F7A600" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0 1 10 0v4" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="#F7A600"/></svg></span><div class="feat-title">Smart Staking</div><div class="feat-desc">Lock tokens for 7, 30, or 90 days for bonus yield. APY multiplier moves with Bitcoin sentiment.</div></div>
+    </div>
+  </div>
 
-                <!-- Market Metrics -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Market Metrics</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="limits-list">
-                            <div class="limit-item">
-                                <span class="limit-label">BTC Dominance</span>
-                                <span class="limit-value" id="btcDominance">--</span>
-                            </div>
-                            <div class="limit-item">
-                                <span class="limit-label">Market Health</span>
-                                <span class="limit-value" id="marketHealth">--</span>
-                            </div>
-                            <div class="limit-item">
-                                <span class="limit-label">Fear & Greed</span>
-                                <span class="limit-value" id="fearGreed">--</span>
-                            </div>
-                            <div class="limit-item">
-                                <span class="limit-label">Whale Score</span>
-                                <span class="limit-value" id="whaleScore">--</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <!-- Connected dashboard -->
+  <div id="dashSection" style="display:none">
+    <div class="section-title">Bitcoin Oracle Signal</div>
+    <div class="btc-bar" id="dashBtcBar">
+      <div class="btc-cell"><div class="btc-val gold-txt" id="d-btcprice">—</div><div class="btc-lbl">BTC Price</div></div>
+      <div class="btc-cell"><div class="btc-val" id="d-btcchange">—</div><div class="btc-lbl">24h Change</div></div>
+      <div class="btc-cell"><div class="btc-val" id="d-fg">—</div><div class="btc-lbl">Fear & Greed</div></div>
+      <div class="btc-cell"><div class="btc-val" id="d-mood">—</div><div class="btc-lbl">Market Mood</div></div>
+    </div>
 
-                <!-- Risk Assessment -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Risk Assessment</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="prediction-item">
-                            <div class="prediction-label">Overall Risk</div>
-                            <div class="prediction-value" id="overallRisk" style="color: var(--accent-primary);">--</div>
-                        </div>
-                        <div class="risk-meter">
-                            <span class="risk-label low">LOW</span>
-                            <div class="risk-bar" id="riskBar">
-                                <div class="risk-segment low" style="width: 33%;"></div>
-                                <div class="risk-segment medium" style="width: 34%;"></div>
-                                <div class="risk-segment high" style="width: 33%;"></div>
-                            </div>
-                            <span class="risk-label high">HIGH</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="riskProgress" style="width: 50%;"></div>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-        </section>
-    </main>
+    <div class="section-title">Your Portfolio</div>
+    <div class="stats-grid">
+      <div class="stat-card stat-gold"><div class="stat-val" id="d-balance">—</div><div class="stat-unit">NMNT</div><div class="stat-lbl">Your Balance</div></div>
+      <div class="stat-card stat-green"><div class="stat-val" id="d-pending">—</div><div class="stat-unit">NMNT</div><div class="stat-lbl">Pending Rewards</div></div>
+      <div class="stat-card stat-blue"><div class="stat-val" id="d-apy">—</div><div class="stat-unit">APY</div><div class="stat-lbl">Current Yield</div></div>
+    </div>
 
-    <footer class="footer">
-        <p>AMAT Protocol &copy; 2026 | Built on Polygon | Secured by AI</p>
-    </footer>
+    <div class="section-title">Token Stats</div>
+    <div class="stats-grid">
+      <div class="stat-card stat-orange"><div class="stat-val" id="d-burnrate">—</div><div class="stat-unit">per transfer</div><div class="stat-lbl">Burn Rate (AI)</div></div>
+      <div class="stat-card stat-purple"><div class="stat-val" id="d-supply">—</div><div class="stat-unit">NMNT</div><div class="stat-lbl">Total Supply</div></div>
+      <div class="stat-card stat-red"><div class="stat-val" id="d-staked">—</div><div class="stat-unit">NMNT</div><div class="stat-lbl">Total Staked</div></div>
+    </div>
 
-    <script>
-        // Configuration - DEPLOYED CONTRACT ADDRESSES
-        const CONFIG = {
-            rpcUrl: 'https://rpc-amoy.polygon.technology',
-            chainId: 80002,
-            chainName: 'Polygon Amoy',
-            contracts: {
-                token: '0x2670276554A3A02F614DF720c0e55A272a9Bf22c',
-                oracle: '0x0067585117049F9f32D367188Dad6a202f64ad3A',
-                circuitBreaker: '0x532BE413641260b7dd78aF895cF3476B438FC966',
-                treasury: '0xC5F1BC03EC57aaE77cBd0725f0d6b59bD5a3cFE1',
-                predictiveSupply: '0x5dfBDBBc516E57B067290cf937FDf7763DC8d4EF'
-            },
-            mlApiUrl: 'http://localhost:8000'
-        };
+    <!-- Epoch progress -->
+    <div class="card">
+      <div class="card-hdr">Epoch Mint Progress <span class="dim" id="d-epochpct">—</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="d-epochbar" style="width:0%"></div></div>
+      <div class="prog-row"><span id="d-minted">Used: —</span><span id="d-mintcap">Cap: —</span></div>
+    </div>
+  </div>
+</div>
 
-        // Contract ABIs
-        const ABIS = {
-            token: [
-                "function totalSupply() view returns (uint256)",
-                "function lastSupplyAdjustment() view returns (uint256)",
-                "function canAdjust() view returns (bool)",
-                "function timeUntilNextEpoch() view returns (uint256)",
-                "event SupplyAdjusted(int256 delta, uint256 newSupply, uint256 timestamp, bytes32 reason)"
-            ],
-            oracle: [
-                "function getCurrentPrediction() view returns (uint256 timestamp, uint256 volatilityProbability, int256 direction, uint256 confidence, int256 recommendedAction, uint256 nonce)"
-            ],
-            circuitBreaker: [
-                "function emergencyActive() view returns (bool)",
-                "function currentTCR() view returns (uint256)",
-                "function getEmergencyState() view returns (bool isEmergency, uint256 tcr)",
-                "function activateEmergency()"
-            ],
-            predictiveSupply: [
-                "function currentMode() view returns (uint8)",
-                "function previewAdjustment() view returns (int256)",
-                "function getSupplyStats() view returns (uint256, int256, uint256, uint256, uint256)"
-            ]
-        };
+<!-- ── STAKE ───────────────────────────────────────────────────────────── -->
+<div id="sec-stake" class="section">
+  <div id="stakeConnectMsg" style="display:none">
+    <div class="hero-connect">
+      <div style="display:flex;justify-content:center;margin-bottom:16px">
+        <svg width="52" height="52" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="#1a1400"/>
+          <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="4"/>
+          <rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="47" cy="44" r="4" fill="#FFC740"/>
+          <circle cx="93" cy="92" r="4" fill="#FFC740"/>
+        </svg>
+      </div>
+      <div class="hc-title">Connect to Stake</div>
+      <div class="hc-sub">Connect your wallet to stake NMNT and earn Bitcoin-driven yield.</div>
+      <button class="btn-primary" onclick="connectWallet()">Connect Wallet</button>
+    </div>
+  </div>
+  <div id="stakeContent" style="display:none">
+    <!-- APY table -->
+    <div class="card">
+      <div class="card-hdr">Current APY Rates <span class="dim" id="s-apy-note">—</span></div>
+      <div class="lock-grid">
+        <div class="lock-opt sel" onclick="selectLock(0,this)"><span class="lock-name">Flexible</span><span class="lock-apy" id="apy-0">—</span><span class="lock-bonus">+0%</span></div>
+        <div class="lock-opt" onclick="selectLock(604800,this)"><span class="lock-name">7 Days</span><span class="lock-apy" id="apy-604800">—</span><span class="lock-bonus">+2%</span></div>
+        <div class="lock-opt" onclick="selectLock(2592000,this)"><span class="lock-name">30 Days</span><span class="lock-apy" id="apy-2592000">—</span><span class="lock-bonus">+8%</span></div>
+        <div class="lock-opt" onclick="selectLock(7776000,this)"><span class="lock-name">90 Days</span><span class="lock-apy" id="apy-7776000">—</span><span class="lock-bonus">+25%</span></div>
+      </div>
+    </div>
 
-        const MODES = ['STEADY', 'PRESERVE', 'SURVIVE', 'GROW'];
-        const RISK_LEVELS = ['Low', 'Medium', 'High', 'Extreme'];
+    <!-- Stake input -->
+    <div class="card">
+      <div class="card-hdr">Stake NMNT <span class="dim" id="s-balance">Balance: —</span></div>
+      <div class="input-row">
+        <input type="number" class="tok-input" id="stakeAmt" placeholder="0.00" oninput="updateEstimate()"/>
+        <button class="max-btn" onclick="setMax()">MAX</button>
+      </div>
+      <div class="estimate" id="yieldEstimate"></div>
+      <button class="btn-gold" id="stakeBtn" onclick="doStake()" disabled>Stake NMNT</button>
+    </div>
 
-        let provider;
-        let signer;
-        let address;
-        let contracts = {};
-        let chart;
+    <!-- Current position -->
+    <div class="card" id="positionCard" style="display:none">
+      <div class="card-hdr">Your Position</div>
+      <div class="pos-grid">
+        <div class="pos-item"><span class="pos-big" id="p-staked">—</span><span class="pos-key">Staked NMNT</span></div>
+        <div class="pos-item"><span class="pos-big green" id="p-pending">—</span><span class="pos-key">Pending Rewards</span></div>
+        <div class="pos-item"><span class="pos-big" id="p-apy">—</span><span class="pos-key">Your APY</span></div>
+        <div class="pos-item"><span class="pos-big" id="p-unlock" style="font-size:13px">—</span><span class="pos-key">Unlocks At</span></div>
+      </div>
+      <div class="lock-notice" id="lockNotice" style="display:none">Tokens locked — cannot unstake until unlock date.</div>
+      <div class="action-row">
+        <button class="btn-sec" id="claimBtn" onclick="doClaim()">Claim Rewards</button>
+        <button class="btn-danger" id="unstakeBtn" onclick="doUnstake()">Unstake All</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-        async function init() {
-            document.getElementById('connectWallet').addEventListener('click', connectWallet);
-            document.getElementById('emergencyBtn').addEventListener('click', activateEmergency);
-            
-            // Auto-connect if already connected
-            if (window.ethereum?.selectedAddress) {
-                await connectWallet();
-            }
+<!-- ── ORACLE ──────────────────────────────────────────────────────────── -->
+<div id="sec-oracle" class="section">
+  <div class="card" style="background:linear-gradient(135deg,rgba(247,166,0,.06),rgba(232,104,44,.04))">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+      <div style="width:52px;height:52px;background:#1a1200;border:1.5px solid rgba(247,166,0,0.5);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="36" height="36" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="5"/>
+          <rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="47" cy="44" r="4" fill="#FFC740"/>
+          <circle cx="93" cy="92" r="4" fill="#FFC740"/>
+        </svg>
+      </div>
+      <div>
+        <div class="card-title">Bitcoin AI Oracle</div>
+        <div class="dim" style="font-size:13px">Reads BTC price + Fear &amp; Greed Index → computes NMNT tokenomics → pushes on-chain every 4h</div>
+      </div>
+    </div>
 
-            // Start ML data polling
-            fetchMLData();
-            setInterval(fetchMLData, 30000);
-        }
+    <!-- Fear & Greed gauge -->
+    <div class="fg-gauge">
+      <div>
+        <div class="fg-num" id="o-fg">—</div>
+        <div style="font-size:11px;color:var(--dim2)">Fear &amp; Greed</div>
+      </div>
+      <div class="fg-bar-wrap">
+        <div class="fg-bar"><div class="fg-marker" id="fgMarker" style="left:50%"></div></div>
+        <div class="fg-labels"><span>Extreme Fear</span><span>Fear</span><span>Neutral</span><span>Greed</span><span>Extreme Greed</span></div>
+      </div>
+    </div>
 
-        async function connectWallet() {
-            if (!window.ethereum) {
-                alert('Please install MetaMask');
-                return;
-            }
-            
-            try {
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-                await provider.send("eth_requestAccounts", []);
-                signer = provider.getSigner();
-                address = await signer.getAddress();
-                
-                document.getElementById('connectWallet').textContent = 
-                    `${address.slice(0, 6)}...${address.slice(-4)}`;
-                
-                await switchToAmoy();
-                await initContracts();
-                await startMonitoring();
-                
-            } catch (error) {
-                console.error('Failed to connect:', error);
-                alert('Failed to connect: ' + (error.message || 'Unknown error'));
-            }
-        }
-        
-        async function switchToAmoy() {
-            try {
-                await window.ethereum.request({
-                    method: 'wallet_switchEthereumChain',
-                    params: [{ chainId: '0x13882' }],
-                });
-            } catch (switchError) {
-                if (switchError.code === 4902) {
-                    try {
-                        await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [{
-                                chainId: '0x13882',
-                                chainName: 'Polygon Amoy',
-                                nativeCurrency: {
-                                    name: 'MATIC',
-                                    symbol: 'MATIC',
-                                    decimals: 18
-                                },
-                                rpcUrls: ['https://rpc-amoy.polygon.technology'],
-                                blockExplorerUrls: ['https://www.oklink.com/amoy']
-                            }],
-                        });
-                    } catch (e) {
-                        console.error('Failed to add network:', e);
-                    }
-                }
-            }
-        }
-        
-        async function initContracts() {
-            const network = await provider.getNetwork();
-            CONFIG.chainId = Number(network.chainId);
-            
-            if (CONFIG.chainId !== 80002 && CONFIG.chainId !== 137) {
-                document.getElementById('contractInfo').textContent = 
-                    `Wrong network! Please switch to Polygon Amoy (ID: 80002)`;
-                document.getElementById('contractInfo').style.color = '#F6465D';
-                return;
-            }
-            
-            // Create contract instances with signer
-            for (const [name, address] of Object.entries(CONFIG.contracts)) {
-                if (address !== '0x0000000000000000000000000000000000000000' && ABIS[name]) {
-                    try {
-                        contracts[name] = new ethers.Contract(address, ABIS[name], signer);
-                    } catch (e) {
-                        console.error(`Failed to create ${name} contract:`, e);
-                    }
-                }
-            }
-            
-            const chainName = CONFIG.chainId === 137 ? 'Polygon Mainnet' : 'Polygon Amoy';
-            document.getElementById('contractInfo').textContent = 
-                `Connected to ${chainName} (ID: ${CONFIG.chainId})`;
-            document.getElementById('contractInfo').style.color = '#0ECB81';
-            
-            if (contracts.circuitBreaker) {
-                document.getElementById('emergencyBtn').disabled = false;
-            }
-        }
+    <!-- Signal stats -->
+    <div class="stats-grid" style="margin-bottom:0">
+      <div class="stat-card stat-orange"><div class="stat-val" id="o-burn">—</div><div class="stat-unit">burn/tx</div><div class="stat-lbl">AI Burn Rate</div></div>
+      <div class="stat-card stat-green"><div class="stat-val" id="o-apy">—</div><div class="stat-unit">multiplier</div><div class="stat-lbl">AI APY Mult</div></div>
+      <div class="stat-card stat-blue"><div class="stat-val" id="o-mint">—</div><div class="stat-unit">NMNT/day</div><div class="stat-lbl">Mint Cap</div></div>
+    </div>
+  </div>
 
-        async function startMonitoring() {
-            await updateDashboard();
-            setInterval(updateDashboard, 15000);
-        }
+  <!-- How it works -->
+  <div class="card">
+    <div class="card-hdr">Signal Flow</div>
+    <div class="flow-step"><div class="flow-n">1</div><div><div class="flow-title">CoinGecko — BTC Price</div><div class="flow-desc">Free public API fetches Bitcoin price in USD and 24h % change. No API key required.</div></div></div>
+    <div class="flow-step"><div class="flow-n">2</div><div><div class="flow-title">Alternative.me — Fear & Greed Index</div><div class="flow-desc">Free public API returns the crypto Fear & Greed Index (0–100) based on volatility, volume, social sentiment, surveys, and dominance.</div></div></div>
+    <div class="flow-step"><div class="flow-n">3</div><div><div class="flow-title">Vercel AI Function — Signal Computation</div><div class="flow-desc">Combines BTC price change and Fear & Greed into a stress score. Maps score to burnRateBps, apyMultiplier, and mintCap using AI logic tuned for NMNT.</div></div></div>
+    <div class="flow-step"><div class="flow-n">4</div><div><div class="flow-title">Gelato — On-Chain Push</div><div class="flow-desc">Automated task calls pushSignal() on the AIOracle contract every 4 hours. The contract validates, clamps, then updates NMNTToken + NMNTStaking atomically.</div></div></div>
+    <div class="flow-step" style="margin-bottom:0"><div class="flow-n">5</div><div><div class="flow-title">NMNT Token & Staking Update</div><div class="flow-desc">All 100M+ token holders instantly get the new burn rate on their next transfer. Stakers see updated APY in real time.</div></div></div>
+  </div>
 
-        async function updateDashboard() {
-            try {
-                // Only update if contracts are initialized
-                if (Object.keys(contracts).length === 0) {
-                    console.log('Contracts not initialized yet');
-                    return;
-                }
-                
-                await Promise.all([
-                    updatePrediction(),
-                    updateSupply(),
-                    updateEmergency(),
-                    updateMode()
-                ]);
-            } catch (error) {
-                console.error('Dashboard update failed:', error);
-            }
-        }
+  <!-- Signal logic table -->
+  <div class="card">
+    <div class="card-hdr">AI Signal Table — Stress Score → Parameters</div>
+    <div style="overflow-x:auto">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;font-family:var(--ff-mono)">
+      <thead><tr style="color:var(--dim2);text-align:left;border-bottom:1px solid var(--border)">
+        <th style="padding:8px 12px">Stress Score</th>
+        <th style="padding:8px 12px">Market Mood</th>
+        <th style="padding:8px 12px">Burn Rate</th>
+        <th style="padding:8px 12px">APY Mult</th>
+        <th style="padding:8px 12px">Mint Cap</th>
+      </tr></thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 12px;color:#f87171">75–100</td><td style="padding:9px 12px;color:#f87171">Extreme Fear</td><td style="padding:9px 12px">4.5%</td><td style="padding:9px 12px;color:var(--green)">4×</td><td style="padding:9px 12px">3M</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 12px;color:#fb923c">55–75</td><td style="padding:9px 12px;color:#fb923c">Fear</td><td style="padding:9px 12px">3%</td><td style="padding:9px 12px;color:var(--green)">2.5×</td><td style="padding:9px 12px">7M</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 12px;color:var(--dim2)">35–55</td><td style="padding:9px 12px;color:var(--dim2)">Neutral</td><td style="padding:9px 12px">1.5%</td><td style="padding:9px 12px">1.5×</td><td style="padding:9px 12px">15M</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 12px;color:#4ade80">15–35</td><td style="padding:9px 12px;color:#4ade80">Greed</td><td style="padding:9px 12px">0.75%</td><td style="padding:9px 12px">1×</td><td style="padding:9px 12px">25M</td></tr>
+        <tr><td style="padding:9px 12px;color:#60a5fa">0–15</td><td style="padding:9px 12px;color:#60a5fa">Extreme Greed</td><td style="padding:9px 12px">0.25%</td><td style="padding:9px 12px;color:#f87171">0.7×</td><td style="padding:9px 12px">40M</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
 
-        async function updatePrediction() {
-            if (!contracts.oracle) return;
-            
-            try {
-                const pred = await contracts.oracle.getCurrentPrediction();
-                
-                const volatility = Number(pred.volatilityProbability) / 100;
-                const direction = Number(pred.direction);
-                const confidence = Number(pred.confidence) / 100;
-                const action = Number(pred.recommendedAction);
-                
-                document.getElementById('volatilityValue').textContent = `${volatility.toFixed(1)}%`;
-                document.getElementById('confidenceValue').textContent = `${confidence.toFixed(1)}%`;
-                
-                // Direction
-                const dirElement = document.getElementById('directionValue');
-                if (direction > 0) {
-                    dirElement.textContent = 'BULL';
-                    dirElement.className = 'prediction-value green';
-                } else if (direction < 0) {
-                    dirElement.textContent = 'BEAR';
-                    dirElement.className = 'prediction-value red';
-                } else {
-                    dirElement.textContent = 'NEUTRAL';
-                    dirElement.className = 'prediction-value';
-                }
-                
-                // Supply action
-                const arrow = document.getElementById('supplyArrow');
-                const actionText = document.getElementById('supplyActionText');
-                const actionDesc = document.getElementById('supplyActionDesc');
-                
-                if (action > 0) {
-                    arrow.className = 'supply-arrow up';
-                    arrow.innerHTML = '<span>↑</span>';
-                    actionText.textContent = `+${action / 100}% Mint`;
-                    actionDesc.textContent = 'Protocol will expand supply';
-                } else if (action < 0) {
-                    arrow.className = 'supply-arrow down';
-                    arrow.innerHTML = '<span>↓</span>';
-                    actionText.textContent = `${action / 100}% Burn`;
-                    actionDesc.textContent = 'Protocol will contract supply';
-                } else {
-                    arrow.className = 'supply-arrow neutral';
-                    arrow.innerHTML = '<span>→</span>';
-                    actionText.textContent = 'No Action Required';
-                    actionDesc.textContent = 'Protocol operating within normal parameters';
-                }
-                
-            } catch (error) {
-                console.error('Failed to update prediction:', error);
-            }
-        }
+  <!-- Recent signal updates -->
+  <div class="card" id="signalHistory" style="display:none">
+    <div class="card-hdr">Recent Oracle Updates</div>
+    <div id="histList"></div>
+  </div>
+</div>
 
-        async function updateSupply() {
-            if (!contracts.token) return;
-            
-            try {
-                const supply = await contracts.token.totalSupply();
-                const formattedSupply = ethers.utils.formatUnits(supply, 18);
-                
-                document.getElementById('totalSupply').textContent = 
-                    `${Number(formattedSupply).toLocaleString(undefined, { maximumFractionDigits: 0 })} AMAT`;
-                
-                // Next epoch
-                const canAdjust = await contracts.token.canAdjust();
-                const timeUntil = await contracts.token.timeUntilNextEpoch();
-                
-                if (canAdjust) {
-                    document.getElementById('nextEpoch').textContent = 'Ready';
-                    document.getElementById('epochStatus').textContent = 'Epoch available';
-                    document.getElementById('epochStatus').className = 'stat-change up';
-                } else {
-                    const minutes = Math.ceil(timeUntil / 60);
-                    document.getElementById('nextEpoch').textContent = `${minutes}m`;
-                    document.getElementById('epochStatus').textContent = 'Until next epoch';
-                }
-                
-            } catch (error) {
-                console.error('Failed to update supply:', error);
-            }
-        }
+<!-- ── ABOUT ───────────────────────────────────────────────────────────── -->
+<div id="sec-about" class="section">
+  <div style="max-width:680px;margin:0 auto">
+    <div style="text-align:center;padding:40px 0 32px">
+      <div style="display:inline-flex;align-items:center;justify-content:center;margin-bottom:20px">
+        <svg width="64" height="64" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="#1a1400"/>
+          <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="3.5"/>
+          <polygon points="70,22 110,44 110,90 70,112 30,90 30,44" fill="none" stroke="#F7A600" stroke-width="1" opacity="0.3"/>
+          <line x1="105" y1="36" x2="118" y2="25" stroke="#F7A600" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+          <circle cx="118" cy="25" r="3" fill="#F7A600" opacity="0.6"/>
+          <line x1="35" y1="100" x2="22" y2="113" stroke="#F7A600" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+          <circle cx="22" cy="113" r="3" fill="#F7A600" opacity="0.6"/>
+          <rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+          <line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="47" cy="44" r="4" fill="#FFC740"/>
+          <circle cx="93" cy="92" r="4" fill="#FFC740"/>
+        </svg>
+      </div>
+      <h1 style="font-size:clamp(28px,4vw,42px);margin-bottom:16px">Why <span class="accent">Bitcoin</span>?</h1>
+      <p class="hero-sub" style="font-size:16px">Bitcoin is the most liquid, most watched, most predictive signal in crypto. When BTC moves, everything moves. NeuralMint is the first token to make this its core mechanic.</p>
+    </div>
 
-        async function updateEmergency() {
-            if (!contracts.circuitBreaker) return;
-            
-            try {
-                const state = await contracts.circuitBreaker.getEmergencyState();
-                // ethers.js v6 returns tuples as arrays
-                const isEmergency = Array.isArray(state) ? state[0] : state[0];
-                const tcr = Number(Array.isArray(state) ? state[1] : state[1]) / 100;
-                
-                const banner = document.getElementById('emergencyBanner');
-                if (isEmergency) {
-                    banner.classList.add('active');
-                } else {
-                    banner.classList.remove('active');
-                }
-                
-                document.getElementById('tcrValue').textContent = `TCR: ${tcr.toFixed(2)}%`;
-                
-                if (tcr < 15) {
-                    document.getElementById('treasuryBalance').className = 'stat-value red';
-                } else {
-                    document.getElementById('treasuryBalance').className = 'stat-value blue';
-                }
-                
-            } catch (error) {
-                console.error('Failed to update emergency:', error);
-            }
-        }
+    <div class="how-grid">
+      <div class="how-card"><span class="how-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="how-title">Bear Market Protection</div><div class="how-desc">When BTC crashes and fear spikes, NMNT automatically increases its burn rate (deflationary pressure) and boosts staking APY to reward holders who don't panic sell.</div></div>
+      <div class="how-card"><span class="how-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="17 6 23 6 23 12" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="how-title">Bull Run Mechanics</div><div class="how-desc">In periods of extreme BTC greed, burn rate drops to near zero and more tokens can be minted — giving the ecosystem room to grow alongside the overall market rally.</div></div>
+      <div class="how-card"><span class="how-icon"><svg width="28" height="28" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg"><circle cx="70" cy="70" r="60" fill="none" stroke="#F7A600" stroke-width="5"/><circle cx="70" cy="70" r="12" fill="#F7A600"/><line x1="70" y1="10" x2="70" y2="40" stroke="#F7A600" stroke-width="4" stroke-linecap="round"/><line x1="70" y1="100" x2="70" y2="130" stroke="#F7A600" stroke-width="4" stroke-linecap="round"/><line x1="10" y1="70" x2="40" y2="70" stroke="#F7A600" stroke-width="4" stroke-linecap="round"/><line x1="100" y1="70" x2="130" y2="70" stroke="#F7A600" stroke-width="4" stroke-linecap="round"/><circle cx="70" cy="70" r="4" fill="#FFC740"/></svg></span><div class="how-title">AI Signal Logic</div><div class="how-desc">The oracle combines two free data sources: CoinGecko (BTC price + 24h change) and Alternative.me (Fear &amp; Greed Index). These are combined into a stress score that maps to tokenomics parameters.</div></div>
+      <div class="how-card"><span class="how-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke="#F7A600" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><div class="how-title">Fully On-Chain</div><div class="how-desc">Every parameter change is a blockchain transaction. Transparent, auditable, and verifiable on Polygonscan. The Gelato automation log shows every oracle update.</div></div>
+    </div>
 
-        async function updateMode() {
-            if (!contracts.predictiveSupply) return;
-            
-            try {
-                const mode = await contracts.predictiveSupply.currentMode();
-                const modeName = MODES[Number(mode)] || 'STEADY';
-                
-                const modeElement = document.getElementById('protocolMode');
-                const modeIcon = document.getElementById('modeIcon');
-                
-                modeElement.textContent = `${modeName} MODE`;
-                modeElement.className = `mode-indicator mode-${modeName.toLowerCase()}`;
-                
-                document.getElementById('currentMode').textContent = modeName;
-                document.getElementById('modeDescription').textContent = getModeDescription(modeName);
-                
-                // Update risk value based on mode
-                const riskElement = document.getElementById('riskValue');
-                const riskLevel = getRiskLevel(mode);
-                riskElement.textContent = riskLevel;
-                riskElement.className = `prediction-value ${getRiskColor(mode)}`;
-                
-                document.getElementById('overallRisk').textContent = riskLevel;
-                document.getElementById('overallRisk').style.color = getRiskHexColor(mode);
-                
-                // Update risk progress
-                const riskProgress = document.getElementById('riskProgress');
-                const progress = getRiskProgress(mode);
-                riskProgress.style.width = `${progress}%`;
-                
-            } catch (error) {
-                console.error('Failed to update mode:', error);
-            }
-        }
+    <div class="card">
+      <div class="card-title">Token Details</div>
+      <hr class="divider"/>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+        <div><span class="dim">Name</span><br/><span style="font-family:var(--ff-mono)">NeuralMint</span></div>
+        <div><span class="dim">Symbol</span><br/><span style="font-family:var(--ff-mono)">NMNT</span></div>
+        <div><span class="dim">Network</span><br/><span style="font-family:var(--ff-mono)">Polygon PoS</span></div>
+        <div><span class="dim">Max Supply</span><br/><span style="font-family:var(--ff-mono)">1,000,000,000</span></div>
+        <div><span class="dim">Oracle Update</span><br/><span style="font-family:var(--ff-mono)">Every 4 hours</span></div>
+        <div><span class="dim">Oracle Source</span><br/><span style="font-family:var(--ff-mono)">Bitcoin Price + F&G</span></div>
+        <div><span class="dim">Base Staking APY</span><br/><span style="font-family:var(--ff-mono)">10% × AI multiplier</span></div>
+        <div><span class="dim">Max Burn Rate</span><br/><span style="font-family:var(--ff-mono)">5% per transfer</span></div>
+      </div>
+    </div>
 
-        function getModeDescription(mode) {
-            const descriptions = {
-                'STEADY': 'Normal market conditions',
-                'PRESERVE': 'Cautious approach recommended',
-                'SURVIVE': 'High volatility detected',
-                'GROW': 'Bullish market opportunity'
-            };
-            return descriptions[mode] || 'Unknown mode';
-        }
+    <div class="card">
+      <div class="card-title">Contract Addresses</div>
+      <hr class="divider"/>
+      <div style="font-family:var(--ff-mono);font-size:12px;display:flex;flex-direction:column;gap:10px">
+        <div><div style="color:var(--dim2);font-size:11px;margin-bottom:3px">NMNT Token</div><div id="addr-token" style="word-break:break-all;color:var(--gold)">Not deployed yet</div></div>
+        <div><div style="color:var(--dim2);font-size:11px;margin-bottom:3px">Staking Contract</div><div id="addr-staking" style="word-break:break-all;color:var(--gold)">Not deployed yet</div></div>
+        <div><div style="color:var(--dim2);font-size:11px;margin-bottom:3px">AI Oracle</div><div id="addr-oracle" style="word-break:break-all;color:var(--gold)">Not deployed yet</div></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        function getRiskLevel(mode) {
-            const levels = ['Low', 'Low', 'High', 'Medium'];
-            return levels[mode] || 'Medium';
-        }
+<!-- ── FOOTER ──────────────────────────────────────────────────────────── -->
+<footer style="border-top:1px solid rgba(247,166,0,0.1);padding:32px 0;margin-top:40px;text-align:center">
+  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px">
+    <svg width="28" height="28" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="#1a1400"/>
+      <polygon points="70,8 122,38 122,98 70,128 18,98 18,38" fill="none" stroke="#F7A600" stroke-width="4"/>
+      <polygon points="70,22 110,44 110,90 70,112 30,90 30,44" fill="none" stroke="#F7A600" stroke-width="1" opacity="0.3"/>
+      <rect x="47" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+      <rect x="84" y="44" width="9" height="48" rx="2" fill="#F7A600"/>
+      <line x1="56" y1="44" x2="84" y2="92" stroke="#F7A600" stroke-width="9" stroke-linecap="round"/>
+      <circle cx="47" cy="44" r="4" fill="#FFC740"/>
+      <circle cx="93" cy="92" r="4" fill="#FFC740"/>
+    </svg>
+    <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:16px;letter-spacing:-0.02em">Neural<span style="color:#F7A600">Mint</span></span>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#5a6070;background:rgba(247,166,0,0.08);padding:2px 8px;border-radius:4px;border:1px solid rgba(247,166,0,0.15)">NMNT</span>
+  </div>
+  <p style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#3a4050;letter-spacing:0.06em">BTC-POWERED AI TOKEN · POLYGON · OPEN SOURCE</p>
+</footer>
 
-        function getRiskColor(mode) {
-            const colors = ['green', 'green', 'red', 'gold'];
-            return colors[mode] || 'gold';
-        }
+</div><!-- /.app -->
+<div id="toast"></div>
 
-        function getRiskHexColor(mode) {
-            const colors = ['#0ECB81', '#0ECB81', '#F6465D', '#F0B90B'];
-            return colors[mode] || '#F0B90B';
-        }
+<!-- ── ETHERS.JS ─────────────────────────────────────────────────────────── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+// CONFIG — Replace with your deployed contract addresses
+// ══════════════════════════════════════════════════════════════════════════════
+const CONFIG = {
+  CHAIN_ID:        80002, // Polygon Amoy Testnet (change to 137 for mainnet)
+  CHAIN_NAME:      "Polygon Amoy Testnet",
+  RPC_URL:         "https://rpc-amoy.polygon.technology",
+  EXPLORER:        "https://amoy.polygonscan.com",
+  ORACLE_API:      "https://neuralmint-oracle.vercel.app/api/signal", // ← YOUR Vercel URL
 
-        function getRiskProgress(mode) {
-            const progress = [25, 25, 85, 45];
-            return progress[mode] || 50;
-        }
+  TOKEN_ADDR:      "0x1EED8E512C93f8c458bcb8362F893ea8aF142913", // ← After deploy
+  STAKING_ADDR:    "0x03B2cC3DB7B7EB7f32A424654bB3CaA48eF18D89",
+  ORACLE_ADDR:     "0xDd527A5441cdC8b666F0D95a4DF639Bcc5A5b8C8",
+};
 
-        async function fetchMLData() {
-            try {
-                const response = await fetch(`${CONFIG.mlApiUrl}/advanced?symbol=BTC`);
-                const data = await response.json();
-                
-                if (data && !data.error) {
-                    document.getElementById('fearGreed').textContent = `${data.fear_greed_index || 50}`;
-                    document.getElementById('whaleScore').textContent = `${data.whale?.metrics?.whale_score || 50}`;
-                    document.getElementById('marketHealth').textContent = `${data.onchain?.market_health?.overall_score || 50}%`;
-                    document.getElementById('btcDominance').textContent = `${data.onchain?.market?.btc_dominance || 50}%`;
-                    
-                    // Update prediction from ML API if no contract
-                    if (!contracts.oracle) {
-                        const vol = data.ensemble_volatility;
-                        const dir = data.ensemble_direction;
-                        const conf = data.ensemble_confidence;
-                        
-                        document.getElementById('volatilityValue').textContent = `${vol?.toFixed(1) || '--'}%`;
-                        document.getElementById('confidenceValue').textContent = `${conf?.toFixed(1) || '--'}%`;
-                        
-                        const dirElement = document.getElementById('directionValue');
-                        if (dir > 0) {
-                            dirElement.textContent = 'BULL';
-                            dirElement.className = 'prediction-value green';
-                        } else if (dir < 0) {
-                            dirElement.textContent = 'BEAR';
-                            dirElement.className = 'prediction-value red';
-                        } else {
-                            dirElement.textContent = 'NEUTRAL';
-                            dirElement.className = 'prediction-value';
-                        }
-                        
-                        document.getElementById('riskValue').textContent = (data.risk_level || 'medium').toUpperCase();
-                        document.getElementById('overallRisk').textContent = (data.risk_level || 'medium').toUpperCase();
-                    }
-                }
-            } catch (error) {
-                console.error('Failed to fetch ML data:', error);
-            }
-        }
+const TOKEN_ABI = [
+  "function name() view returns (string)",
+  "function symbol() view returns (string)",
+  "function totalSupply() view returns (uint256)",
+  "function balanceOf(address) view returns (uint256)",
+  "function burnRateBps() view returns (uint256)",
+  "function mintCapPerEpoch() view returns (uint256)",
+  "function remainingMintCap() view returns (uint256)",
+  "function mintedThisEpoch() view returns (uint256)",
+  "function getBTCSignal() view returns (uint256,int256,uint256,string,uint256)",
+  "function approve(address,uint256) returns (bool)",
+  "function allowance(address,address) view returns (uint256)",
+];
 
-        async function activateEmergency() {
-            if (!contracts.circuitBreaker) return;
-            
-            if (!confirm('WARNING: This will halt all supply adjustments. Continue?')) {
-                return;
-            }
-            
-            try {
-                const tx = await contracts.circuitBreaker.activateEmergency();
-                await tx.wait();
-                alert('Emergency mode activated!');
-                await updateEmergency();
-            } catch (error) {
-                console.error('Failed to activate emergency:', error);
-                alert('Failed to activate emergency: ' + (error.reason || error.message));
-            }
-        }
+const STAKING_ABI = [
+  "function stake(uint256,uint256) external",
+  "function unstake() external",
+  "function claimReward() external",
+  "function apyMultiplier() view returns (uint256)",
+  "function totalStaked() view returns (uint256)",
+  "function effectiveApyBps(uint256) view returns (uint256)",
+  "function pendingReward(address) view returns (uint256)",
+  "function getUserStake(address) view returns (uint256,uint256,uint256,uint256,uint256,uint256)",
+];
 
-        // Initialize chart
-        function initChart() {
-            const ctx = document.getElementById('predictionChart').getContext('2d');
-            
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: [],
-                    datasets: [
-                        {
-                            label: 'Volatility %',
-                            data: [],
-                            borderColor: '#F0B90B',
-                            backgroundColor: 'rgba(240, 185, 11, 0.1)',
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 0
-                        },
-                        {
-                            label: 'Confidence %',
-                            data: [],
-                            borderColor: '#00D9FF',
-                            backgroundColor: 'transparent',
-                            tension: 0.4,
-                            pointRadius: 0
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                color: '#848E9C',
-                                usePointStyle: true,
-                                padding: 20
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            display: true,
-                            grid: { color: '#2B2F3E' },
-                            ticks: { color: '#848E9C', maxTicksLimit: 8 }
-                        },
-                        y: {
-                            display: true,
-                            grid: { color: '#2B2F3E' },
-                            ticks: { color: '#848E9C' },
-                            min: 0,
-                            max: 100
-                        }
-                    },
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    }
-                }
-            });
-        }
+const ORACLE_ABI = [
+  "function getLatestSignal() view returns (uint256,uint256,uint256,uint256,int256,uint256,string,uint256,bool)",
+  "function nextUpdateTime() view returns (uint256)",
+];
 
-        function addChartData(volatility, confidence) {
-            const now = new Date().toLocaleTimeString();
-            
-            chart.data.labels.push(now);
-            chart.data.datasets[0].data.push(volatility);
-            chart.data.datasets[1].data.push(confidence);
-            
-            if (chart.data.labels.length > 20) {
-                chart.data.labels.shift();
-                chart.data.datasets[0].data.shift();
-                chart.data.datasets[1].data.shift();
-            }
-            
-            chart.update('none');
-        }
+// ══════════════════════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════════════════════
+let provider, signer, address;
+let tokenContract, stakingContract, oracleContract;
+let selectedLock = 0;
+let liveSignal = null;
+let signalHistory = [];
 
-        // Start app
-        window.addEventListener('load', () => {
-            init();
-            initChart();
-        });
-    </script>
+// ══════════════════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════════════════
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+
+  if (id === 'stake')   renderStakeTab();
+  if (id === 'oracle')  renderOracleTab();
+  if (id === 'about')   renderAboutTab();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// WALLET
+// ══════════════════════════════════════════════════════════════════════════════
+async function connectWallet() {
+  if (!window.ethereum) return showToast("MetaMask not detected. Please install it.", "err");
+  try {
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    signer  = await provider.getSigner();
+    address = await signer.getAddress();
+    const net = await provider.getNetwork();
+
+    if (Number(net.chainId) !== CONFIG.CHAIN_ID) {
+      await switchNetwork();
+      return;
+    }
+
+    onConnected();
+  } catch (e) {
+    showToast(e.message || "Connection failed", "err");
+  }
+}
+
+async function switchNetwork() {
+  try {
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: "0x" + CONFIG.CHAIN_ID.toString(16) }],
+    });
+    connectWallet();
+  } catch (e) {
+    if (e.code === 4902) {
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [{
+          chainId:         "0x" + CONFIG.CHAIN_ID.toString(16),
+          chainName:       CONFIG.CHAIN_NAME,
+          rpcUrls:         [CONFIG.RPC_URL],
+          nativeCurrency:  { name:"POL", symbol:"POL", decimals:18 },
+          blockExplorerUrls: [CONFIG.EXPLORER],
+        }],
+      });
+      connectWallet();
+    }
+  }
+}
+
+function onConnected() {
+  tokenContract   = new ethers.Contract(CONFIG.TOKEN_ADDR,   TOKEN_ABI,   signer);
+  stakingContract = new ethers.Contract(CONFIG.STAKING_ADDR, STAKING_ABI, signer);
+  oracleContract  = new ethers.Contract(CONFIG.ORACLE_ADDR,  ORACLE_ABI,  signer);
+
+  // Update UI
+  document.getElementById("walletArea").innerHTML =
+    `<div class="wallet-pill"><div class="w-dot"></div>${address.slice(0,6)}…${address.slice(-4)}</div>`;
+
+  document.getElementById("heroSection").style.display = "none";
+  document.getElementById("dashSection").style.display = "block";
+
+  // Update about tab addresses
+  document.getElementById("addr-token").textContent   = CONFIG.TOKEN_ADDR;
+  document.getElementById("addr-staking").textContent = CONFIG.STAKING_ADDR;
+  document.getElementById("addr-oracle").textContent  = CONFIG.ORACLE_ADDR;
+
+  loadDashboard();
+  loadLiveSignal();
+  setInterval(loadLiveSignal, 60000); // refresh signal every minute
+  setInterval(loadDashboard, 15000);  // refresh dashboard every 15s
+
+  window.ethereum.on("accountsChanged", () => window.location.reload());
+  window.ethereum.on("chainChanged",    () => window.location.reload());
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// LIVE SIGNAL (fetched from Vercel, no wallet needed)
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadLiveSignal() {
+  try {
+    const res  = await fetch(CONFIG.ORACLE_API);
+    const data = await res.json();
+    liveSignal = data;
+    renderBTCBars(data.display);
+    renderOracleStats(data.display, data.onChain);
+
+    // Add to history
+    signalHistory.unshift({ ...data.display, time: new Date().toLocaleTimeString() });
+    if (signalHistory.length > 8) signalHistory.pop();
+    renderHistory();
+  } catch (e) {
+    console.warn("Signal fetch failed:", e.message);
+  }
+}
+
+// Also load signal for hero (no wallet)
+async function loadHeroSignal() {
+  try {
+    const res  = await fetch(CONFIG.ORACLE_API);
+    const data = await res.json();
+    renderHeroBtcBar(data.display);
+  } catch {}
+}
+
+function renderBTCBars(d) {
+  if (!d) return;
+  const isUp = d.btcChange24h && d.btcChange24h.startsWith("+");
+  const chgClass = isUp ? "up" : d.btcChange24h && d.btcChange24h.startsWith("-") ? "down" : "neutral";
+  const moodClass = "mood-" + (d.mood||"neutral").toLowerCase().replace(" ","-");
+
+  ["d-btcprice","h-btcprice"].forEach(id => { const el=document.getElementById(id); if(el) el.textContent = d.btcPrice||"—"; });
+  ["d-btcchange","h-btcchange"].forEach(id => { const el=document.getElementById(id); if(el){el.textContent=d.btcChange24h||"—"; el.className="btc-val "+chgClass;} });
+  ["d-fg","h-fg"].forEach(id => { const el=document.getElementById(id); if(el) el.textContent = d.fearGreedIndex != null ? d.fearGreedIndex + " / 100" : "—"; });
+  ["d-mood","h-mood"].forEach(id => { const el=document.getElementById(id); if(el) el.innerHTML = `<div class="mood-badge ${moodClass}">${d.mood||"—"}</div>`; });
+}
+
+function renderHeroBtcBar(d) {
+  if (!d) return;
+  const isUp = d.btcChange24h && d.btcChange24h.startsWith("+");
+  const chgClass = isUp ? "up" : "down";
+  const moodClass = "mood-" + (d.mood||"neutral").toLowerCase().replace(" ","-");
+  const el = id => document.getElementById(id);
+  if(el("h-btcprice")) el("h-btcprice").textContent = d.btcPrice||"—";
+  if(el("h-btcchange")) { el("h-btcchange").textContent=d.btcChange24h||"—"; el("h-btcchange").className="btc-val "+chgClass; }
+  if(el("h-fg")) el("h-fg").textContent = d.fearGreedIndex != null ? d.fearGreedIndex+" / 100" : "—";
+  if(el("h-mood")) el("h-mood").innerHTML = `<div class="mood-badge ${moodClass}">${d.mood||"—"}</div>`;
+}
+
+function renderOracleStats(display, onChain) {
+  if (!display) return;
+  const el = id => document.getElementById(id);
+  if(el("o-burn")) el("o-burn").textContent = display.burnRate || "—";
+  if(el("o-apy"))  el("o-apy").textContent  = display.apyMultiplier || "—";
+  if(el("o-mint")) el("o-mint").textContent  = display.mintCap || "—";
+  const fg = display.fearGreedIndex;
+  if(el("o-fg"))      el("o-fg").textContent  = fg != null ? fg : "—";
+  if(el("fgMarker"))  el("fgMarker").style.left = (fg||50) + "%";
+}
+
+function renderHistory() {
+  const list = document.getElementById("histList");
+  const card = document.getElementById("signalHistory");
+  if (!list || signalHistory.length === 0) return;
+  card.style.display = "block";
+  list.innerHTML = signalHistory.map(s => `
+    <div class="hist-row">
+      <span class="hist-time">${s.time}</span>
+      <span>BTC ${s.btcPrice}</span>
+      <span class="${s.btcChange24h&&s.btcChange24h.startsWith('+')?'up':'down'}">${s.btcChange24h}</span>
+      <span>F&G: ${s.fearGreedIndex}</span>
+      <span>Burn: ${s.burnRate}</span>
+      <span>APY: ${s.apyMultiplier}</span>
+    </div>
+  `).join("");
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadDashboard() {
+  if (!address || !tokenContract) return;
+  try {
+    const [supply, balance, burnRate, mintCap, remaining, minted, staked, apyMult, userStake] = await Promise.all([
+      tokenContract.totalSupply(),
+      tokenContract.balanceOf(address),
+      tokenContract.burnRateBps(),
+      tokenContract.mintCapPerEpoch(),
+      tokenContract.remainingMintCap(),
+      tokenContract.mintedThisEpoch(),
+      stakingContract.totalStaked(),
+      stakingContract.apyMultiplier(),
+      stakingContract.getUserStake(address),
+    ]);
+
+    const fmt = (wei, d=0) => parseFloat(ethers.formatEther(wei)).toLocaleString("en-US",{maximumFractionDigits:d});
+    const el  = id => document.getElementById(id);
+
+    if(el("d-balance"))  el("d-balance").textContent  = fmt(balance, 2);
+    if(el("d-supply"))   el("d-supply").textContent   = fmt(supply, 0);
+    if(el("d-staked"))   el("d-staked").textContent   = fmt(staked, 0);
+    if(el("d-burnrate")) el("d-burnrate").textContent = (Number(burnRate)/100).toFixed(2)+"%";
+    if(el("d-pending"))  el("d-pending").textContent  = fmt(userStake[4], 4);
+
+    const apyBps = userStake[0] > 0n ? userStake[5] : await stakingContract.effectiveApyBps(0);
+    if(el("d-apy")) el("d-apy").textContent = (Number(apyBps)/100).toFixed(1)+"%";
+
+    // Epoch progress
+    const used = mintCap - remaining;
+    const pct  = mintCap > 0n ? Math.round(Number(used * 100n / mintCap)) : 0;
+    if(el("d-epochpct")) el("d-epochpct").textContent = pct + "% used";
+    if(el("d-epochbar")) el("d-epochbar").style.width = pct + "%";
+    if(el("d-minted"))   el("d-minted").textContent  = "Used: " + fmt(used, 0) + " NMNT";
+    if(el("d-mintcap"))  el("d-mintcap").textContent = "Cap: " + fmt(mintCap, 0) + " NMNT";
+
+  } catch (e) {
+    console.warn("Dashboard load error:", e.message);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STAKE TAB
+// ══════════════════════════════════════════════════════════════════════════════
+function renderStakeTab() {
+  const hasWallet = !!address;
+  document.getElementById("stakeConnectMsg").style.display = hasWallet ? "none" : "block";
+  document.getElementById("stakeContent").style.display   = hasWallet ? "block" : "none";
+  if (hasWallet) loadStakeData();
+}
+
+async function loadStakeData() {
+  if (!address || !stakingContract) return;
+  try {
+    const [bal, apyMult, userStake] = await Promise.all([
+      tokenContract.balanceOf(address),
+      stakingContract.apyMultiplier(),
+      stakingContract.getUserStake(address),
+    ]);
+
+    document.getElementById("s-balance").textContent = "Balance: " + parseFloat(ethers.formatEther(bal)).toLocaleString("en-US",{maximumFractionDigits:2}) + " NMNT";
+    document.getElementById("s-apy-note").textContent = "AI Multiplier: " + (Number(apyMult)/100).toFixed(1) + "×";
+
+    // APY previews
+    const locks = [0, 604800, 2592000, 7776000];
+    for (const lk of locks) {
+      const bps = await stakingContract.effectiveApyBps(lk);
+      const el = document.getElementById("apy-"+lk);
+      if (el) el.textContent = (Number(bps)/100).toFixed(1)+"%";
+    }
+
+    // Position
+    const [amt,,, unlockTime, pending, apyBps] = userStake;
+    const posCard = document.getElementById("positionCard");
+    if (amt > 0n) {
+      posCard.style.display = "block";
+      document.getElementById("p-staked").textContent  = parseFloat(ethers.formatEther(amt)).toLocaleString("en-US",{maximumFractionDigits:2});
+      document.getElementById("p-pending").textContent = parseFloat(ethers.formatEther(pending)).toLocaleString("en-US",{maximumFractionDigits:4});
+      document.getElementById("p-apy").textContent     = (Number(apyBps)/100).toFixed(1)+"%";
+      const unlockTs = Number(unlockTime);
+      document.getElementById("p-unlock").textContent  = unlockTs > 0 ? new Date(unlockTs*1000).toLocaleDateString() : "Unlocked";
+      const isLocked = unlockTs > Math.floor(Date.now()/1000);
+      document.getElementById("lockNotice").style.display  = isLocked ? "block" : "none";
+      document.getElementById("unstakeBtn").disabled       = isLocked;
+      document.getElementById("claimBtn").disabled         = pending === 0n;
+      document.getElementById("stakeBtn").textContent      = "Add to Position";
+    } else {
+      posCard.style.display = "none";
+    }
+
+    updateEstimate();
+  } catch (e) {
+    console.warn("Stake load error:", e.message);
+  }
+}
+
+function selectLock(val, el) {
+  selectedLock = val;
+  document.querySelectorAll(".lock-opt").forEach(e => e.classList.remove("sel"));
+  el.classList.add("sel");
+  updateEstimate();
+}
+
+function updateEstimate() {
+  const amt  = parseFloat(document.getElementById("stakeAmt").value);
+  const apy  = document.getElementById("apy-"+selectedLock)?.textContent;
+  const btn  = document.getElementById("stakeBtn");
+  if (!isNaN(amt) && amt > 0 && apy) {
+    const yearlyYield = (amt * parseFloat(apy) / 100).toFixed(2);
+    document.getElementById("yieldEstimate").textContent = `Estimated yearly yield: ~${yearlyYield} NMNT`;
+    btn.disabled = false;
+  } else {
+    document.getElementById("yieldEstimate").textContent = "";
+    btn.disabled = true;
+  }
+}
+
+function setMax() {
+  tokenContract.balanceOf(address).then(b => {
+    document.getElementById("stakeAmt").value = parseFloat(ethers.formatEther(b)).toFixed(4);
+    updateEstimate();
+  });
+}
+
+async function doStake() {
+  const amtStr = document.getElementById("stakeAmt").value;
+  if (!amtStr || parseFloat(amtStr) <= 0) return showToast("Enter an amount","err");
+  const wei = ethers.parseEther(amtStr);
+  try {
+    document.getElementById("stakeBtn").disabled = true;
+    // Approve
+    const allowance = await tokenContract.allowance(address, CONFIG.STAKING_ADDR);
+    if (allowance < wei) {
+      showToast("Approving NMNT…");
+      const tx = await tokenContract.approve(CONFIG.STAKING_ADDR, ethers.MaxUint256);
+      await tx.wait(); showToast("Approved ✓","ok");
+    }
+    showToast("Staking…");
+    const tx = await stakingContract.stake(wei, selectedLock);
+    await tx.wait();
+    showToast(`Staked ${amtStr} NMNT ✓`, "ok");
+    document.getElementById("stakeAmt").value = "";
+    loadStakeData(); loadDashboard();
+  } catch (e) { showToast(e.reason || e.message || "Failed","err"); }
+  finally { document.getElementById("stakeBtn").disabled = false; }
+}
+
+async function doClaim() {
+  try {
+    document.getElementById("claimBtn").disabled = true;
+    showToast("Claiming rewards…");
+    const tx = await stakingContract.claimReward();
+    await tx.wait();
+    showToast("Rewards claimed ✓", "ok");
+    loadStakeData(); loadDashboard();
+  } catch (e) { showToast(e.reason || e.message || "Failed","err"); }
+  finally { document.getElementById("claimBtn").disabled = false; }
+}
+
+async function doUnstake() {
+  try {
+    document.getElementById("unstakeBtn").disabled = true;
+    showToast("Unstaking…");
+    const tx = await stakingContract.unstake();
+    await tx.wait();
+    showToast("Unstaked ✓", "ok");
+    loadStakeData(); loadDashboard();
+  } catch (e) { showToast(e.reason || e.message || "Failed","err"); }
+  finally { document.getElementById("unstakeBtn").disabled = false; }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ORACLE TAB + ABOUT
+// ══════════════════════════════════════════════════════════════════════════════
+function renderOracleTab() {
+  if (liveSignal) renderOracleStats(liveSignal.display, liveSignal.onChain);
+  renderHistory();
+}
+
+function renderAboutTab() {
+  document.getElementById("addr-token").textContent   = CONFIG.TOKEN_ADDR !== "0x000...000" ? CONFIG.TOKEN_ADDR : "Deploy contracts first (see guide)";
+  document.getElementById("addr-staking").textContent = CONFIG.STAKING_ADDR !== "0x000...000" ? CONFIG.STAKING_ADDR : "Deploy contracts first (see guide)";
+  document.getElementById("addr-oracle").textContent  = CONFIG.ORACLE_ADDR !== "0x000...000" ? CONFIG.ORACLE_ADDR : "Deploy contracts first (see guide)";
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════════════════════════════
+function showToast(msg, type="info") {
+  const el = document.createElement("div");
+  el.className = `toast-item toast-${type==="ok"?"ok":type==="err"?"err":"info"}`;
+  el.textContent = msg;
+  document.getElementById("toast").appendChild(el);
+  setTimeout(() => el.remove(), 4000);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INIT — Load signal on page load, no wallet needed
+// ══════════════════════════════════════════════════════════════════════════════
+loadHeroSignal();
+setInterval(loadHeroSignal, 60000);
+
+// Auto-connect if MetaMask already connected
+if (window.ethereum?.selectedAddress) connectWallet();
+</script>
 </body>
 </html>
